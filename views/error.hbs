@@ -1,0 +1,22 @@
+<h1>{{message}}</h1>
+<h2>{{error.status}}</h2>
+<pre>{{error.stack}}</pre>
+if (response.used) {
+
+            document.getElementById('error2').innerHTML = response.used;
+          }
+          else if (response.minAmount) {
+            document.getElementById('error').innerHTML = response.minAmountMsg;
+          }
+          else if (response.maxAmount) {
+            document.getElementById('error').innerHTML = response.maxAmountMsg
+          }
+          else if (response.invalidDate) {
+            document.getElementById('error').innerHTML = response.invalidDateMsg
+          }
+          else if (response.invalidCoupon) {
+            document.getElementById('error').innerHTML = response.invalidCouponMsg
+          }
+          else if (response.noCoupon) {
+            document.getElementById('error').innerHTML = 'Invalid Coupon Details'
+          }

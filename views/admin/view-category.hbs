@@ -1,0 +1,55 @@
+<body>
+    <br>
+    <div class="d-flex justify-content-end">
+   <a href="/admin/add-category"><button  style="width:180px ;margin-left:20px" type="button" class="btn btn-primary">Add categories</button></a> 
+   </div>
+    <br>
+    <table class="table ustify-content-end ">
+  <thead>
+    <tr>
+      <th scope="col">No</th>
+      <th scope="col">CATEGORY</th>
+      {{!-- <th scope="col">SUB-CATEGORY</th>
+      <th scope="col">Image</th> --}}
+      <th scope="col">OPTIONS</th>
+      <th scope="col">Status</th>
+      <th scope="col">Action</th>
+        
+      
+
+     
+     
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+    <tr>
+      <th scope="row">{{@index}}</th>
+      <td>{{this.category}}</td>
+      
+      <td><a href="/admin/edit-category?id={{this._id}}" class="btn btn-primary">EDIT</a></td>
+      <td>{{#if isBlocked}}
+            <span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1"></i>Block
+            </span>
+
+            {{else}}
+            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>
+              Active</span>
+            {{/if}}</td>
+      <td>{{#if isBlocked}}
+          <a href="/admin/unBlockCat?id={{this._id}}" class="badge bg-success"><i class="bi bi-check-circle me-1"
+                onclick="return confirm ('are you sure that you want to UnList {{this.category}}')"></i>
+              Unblock</a>
+              {{else}}
+              
+              <a href="/admin/blockCat?id={{this._id}}" class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1"
+                onclick="return confirm ('are you sure that you want to List {{this.category}}')"></i>
+              Block</a>
+
+       {{/if}}       
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+</body>

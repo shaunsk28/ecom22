@@ -1,0 +1,59 @@
+<section>
+  <div class="container">
+    <div class="row mt-5">
+      <a href="/admin/add-products" style="margin-left: 1.2rem;" class="btn btn-success ">Add Product</a>
+    </div>
+    <table class="table mt-4">
+      <thead>
+        <tr>
+          <th scope="col">No</th>
+          <th scope="col">Name</th>
+          <th scope="col">Category</th>
+          <th scope="col">Description</th>
+          <th scope="col">Image</th>
+          <th scope="col">Options</th>
+          <th scope="col">Status</th>
+          <th scope="col">Action</th>
+          <th></th>
+
+
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+        <tr>
+          <th scope="row">{{@index}}</th>
+          <td>{{this.Name}}</td>
+          <td>{{this.category}}</td>
+          <td>{{this.Description}}</td>
+          <td><img class="zoomable-image" style="width:50px;height:50px;" src="/product-images/{{this.images.[0]}}" alt="">
+          </td>
+          <td><a href="/admin/edit-products?id={{this._id}}" class="btn btn-primary">Edit</a></td>
+          {{!-- <td><a href="/admin/delete-products/{{this._id}}" class="btn btn-danger"
+              onclick=" return confirm('Are you sure {{this.Name}}?')">Delete</a></td> --}}
+          <td>{{#if isActive}}
+            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Active
+            </span>
+
+            {{else}}
+            <span class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1"></i>
+              Blocked</span>
+            {{/if}}
+          </td>
+          <td>{{#if isActive}}
+            <a href="/admin/blockPro?id={{this._id}}" class="badge bg-danger"><i class="bi bi-exclamation-octagon me-1"
+                onclick="return confirm ('are you sure that you want to List {{this.Name}}')"></i>
+              Block</a>
+            {{else}}
+            <a href="/admin/unBlockPro?id={{this._id}}" class="badge bg-success"><i class="bi bi-check-circle me-1"
+                onclick="return confirm ('are you sure that you want to UnList {{this.Name}}')"></i>
+              Unblock</a>
+            {{/if}}
+          </td>
+        </tr>
+        {{/each}}
+
+      </tbody>
+    </table>
+  </div>
+</section>

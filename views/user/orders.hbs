@@ -1,0 +1,84 @@
+<section>
+  <div class="container">
+    <div class="row mt-5">
+
+    </div>
+    <table class="table mt-5" id="ordersTable">
+      <thead>
+        <tr>
+          <th scope="col">Order</th>
+          <th scope="col">Date</th>
+          <th scope="col">Payment</th>
+          <th scope="col">Status</th>
+          <th scope="col">Total</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each orders}}
+        <tr>
+          <td>{{this._id}}</td>
+          <td>{{this.date}}</td>
+          <td>{{this.paymentMethod}}</td>
+          <td>{{this.status}}</td>
+          <td>₹{{this.totalAmount}} for {{this.products.length}} item</td>
+
+          <td>
+            <a href="/view-order-products/{{this._id}}" class="btn btn-primary">View</a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</section>
+<script>
+  // Function to convert timestamp to human-readable date format
+  function formatDate(timestamp) {
+    var date = new Date(timestamp);
+    var options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: true
+    };
+    return date.toLocaleString('en-US', options);
+  }
+
+  // Function to convert order ID to a more readable format
+   function generateOrderId() {
+    // Generate a random number and convert it to a string
+    var randomNumber = Math.floor(Math.random() * 1000000);
+    var orderId = randomNumber.toString().padStart(6, '0'); // Pad with leading zeros if necessary
+
+    // Add any prefix or suffix to the order ID as needed
+    var formattedOrderId = 'ORD-' + orderId;
+
+    return formattedOrderId;
+  }
+
+  // Get the table rows
+  var tableRows = document.querySelectorAll('#ordersTable tbody tr');
+
+  // Iterate through each row and format the order ID and date
+  tableRows.forEach(function(row) {
+    // Get the order ID and date elements in the row
+    var orderIdElement = row.querySelector('td:first-child');
+    var dateElement = row.querySelector('td:nth-child(2)');
+
+    // Get the original order ID and date values
+    var orderId = orderIdElement.textContent;
+    var timestamp = Date.parse(dateElement.textContent);
+
+    // Format the order ID and date
+    var formattedOrderId = generateOrderId(orderId);
+    var formattedDate = formatDate(timestamp);
+
+    // Update the elements with the formatted values
+    orderIdElement.textContent = formattedOrderId;
+    dateElement.textContent = formattedDate;
+  });
+</script>

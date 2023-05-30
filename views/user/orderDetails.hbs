@@ -1,0 +1,168 @@
+
+  <section class="content-main mt-50">
+    <div class="container">
+      <div class="row">
+
+        <div class="content-header">
+          <div>
+            <h2 class="content-title card-title">Order detail</h2>
+            <p>Details for Order ID:{{order._id}}</p>
+          </div>
+        </div>
+        <div class="card">
+          <header class="card-header">
+            <div class="row align-items-center">
+              <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                <span>
+                  <i class="material-icons md-calendar_today"></i>
+                  <div class="row">
+                    <div class="col">
+                      <b> ORDER PLACED<br>{{order.date}}</b>
+
+                    </div>
+                    <div class="col">
+                      <b> <br> </b>
+
+                    </div>
+                    <div class="col">
+                      <b> TOTAL<br>₹{{order.totalAmount}}</b>
+
+                    </div>
+                    <div class="col">
+                      <b> <br> </b>
+
+                    </div>
+                    <div class="col">
+                      <b> SHIP TO <br> {{address.[0].address.name}}</b>
+
+                    </div>
+                    <div class="col">
+                      <b> <br> </b>
+                    </div>
+                  </div>
+                </span> <br>
+                <small class="text-muted">Order ID: {{order._id}}</small>
+              </div>
+            </div>
+          </header> <!-- card-header end// -->
+          <div class="card-body">
+            <div class="row mb-50 mt-20 order-info-wrap">
+              <div class="col-md-4">
+                <article class="icontext align-items-start">
+                  <span class="icon icon-sm rounded-circle bg-primary-light">
+                    <i class="text-primary material-icons md-person"></i>
+                  </span>
+                  <div class="text">
+                    <h6 class="mb-1">Contact Info</h6>
+                    <p class="mb-1">
+                      {{address.[0].address.name}} <br> <template class="__cf_email__"
+                        data-cfemail="e2838e879aa2879a838f928e87cc818d8f">[email&#160;protected]</template> <br>
+                      {{address.[0].address.phone}}
+                    </p>
+                    <a href="#">View profile</a>
+                  </div>
+                </article>
+              </div> <!-- col// -->
+              <div class="col-md-4">
+                <article class="icontext align-items-start">
+                  <span class="icon icon-sm rounded-circle bg-primary-light">
+                    <i class="text-primary material-icons md-local_shipping"></i>
+                  </span>
+                  <div class="box shadow-sm bg-light">
+                    <h6 class="mb-15">Payment info</h6>
+                    <p>
+                      {{order.paymentMethod}}
+                    </p>
+                  </div>
+                </article>
+              </div> <!-- col// -->
+              <div class="col-md-4">
+                <article class="icontext align-items-start">
+                  <span class="icon icon-sm rounded-circle bg-primary-light">
+                    <i class="text-primary material-icons md-place"></i>
+                  </span>
+                  <div class="text">
+                    <h6 class="mb-1">Shipping Address</h6>
+                    <p class="mb-1">
+                      {{address.[0].address.billing_address}}
+                      <br>{{address.[0].address.billing_address2}}<br>{{address.[0].address.city}}<br>{{address.[0].address.state}}<br>{{address.[0].address.pincode}}
+                    </p>
+                    <a href="#">View profile</a>
+                  </div>
+                </article>
+              </div> <!-- col// -->
+            </div> <!-- row // -->
+            <div class="row">
+              <div class="col-lg-7">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th width="40%">Product</th>
+                        <th width="20%">Unit Price</th>
+                        <th width="20%">Quantity</th>
+                        <th width="20%" class="text-end">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {{#each products}}
+                      <tr>
+                        <td>
+                          <a class="itemside" href="#">
+                            <div class="left">
+                              <img src="/product-images/{{this._id}}.jpg"width="40" height="40" class="img-xs"
+                                alt="Item">
+                            </div>
+                            <div class="info">{{this.product.Name}}</div>
+                          </a>
+                        </td>
+                        <td>₹{{this.product.Price}}</td>
+                        <td>{{this.quantity}}</td>
+                        <td class="text-end">₹{{ multiply this.product.Price this.quantity}}</td>
+                      </tr>
+                      {{/each}}
+
+                      <tr>
+                        <td colspan="4">
+                          <article class="float-end">
+                            <dl class="dlist">
+                              <dt>Grand total:</dt>
+                              <dd> <b class="h5">₹{{order.totalAmount}}</b> </dd>
+                            </dl>
+
+                          </article>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div> <!-- table-responsive// -->
+              </div> <!-- col// -->
+              <div class="col-lg-1"></div>
+              <div class="col-lg-4">
+
+                <div class="h-25 pt-4">
+
+
+                  {{#if (eq order.status "Delivered")}}
+                  <a href="/order-return/{{order._id}}" class="btn btn-danger"
+                    onclick=" return confirm('Do you want to Return Item?Are you sure?')">Return Items</a>
+                  {{else if (eq order.status "Return")}}
+                  &nbsp;
+                  {{else}}
+                  <a href="/order-cancel/{{order._id}}" class="btn btn-danger"
+                    onclick=" return confirm('Do you want to Cancel Order?Are you sure?')">Cancel Items</a>
+                  {{/if}}
+
+                </div>
+              </div> <!-- col// -->
+            </div>
+          </div> <!-- card-body end// -->
+        </div> <!-- card end// -->
+  </section> <!-- content-main end// -->
+  
+
+
+
+
+
+  

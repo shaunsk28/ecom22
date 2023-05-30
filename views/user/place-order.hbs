@@ -1,0 +1,528 @@
+<body>
+  <main class="main">
+    <section class="mt-50 mb-50">
+      <div class="container">
+
+        <div class="modal-address">
+  <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body mx-3">
+          <form action="/add-address-checkout" method="post" id="address">
+            <input type="hidden" name="userId" value="{{user._id}}">
+            <div class="form-group">
+              <label for="name">First Name *</label>
+              <input type="text" name="name" id="name" placeholder="Enter your first name" onblur="namecheck()" required>
+              <label id="nmlabel" for="name" style="display: none; color:red;">This field is required</label>
+              <label id="nmlabel-01" for="name" style="display: none; color:red;">Name doesn't start with a number</label>
+              <label id="nmlabel-02" for="name" style="display: none; color:red;">Name doesn't contain special characters</label>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone *</label>
+              <input type="tel" name="phone" id="phone" placeholder="Enter your phone number" onblur="phonecheck()" required>
+              <label id="ml" for="phone" style="display: none; color:red;">This field is required</label>
+              <label id="ml-01" for="phone" style="display: none; color:red;">Minimum 10 digits required</label>
+            </div>
+            <div class="form-group">
+              <label for="address">Address *</label>
+              <input type="text" name="billing_address" id="address" placeholder="Enter your address" onblur="addresscheck()" required>
+              <label id="adlabel" for="address" style="display: none; color:red;">This field is required</label>
+              <label id="adlabel-01" for="address" style="display: none; color:red;">Address doesn't start with a number</label>
+              <label id="adlabel-02" for="address" style="display: none; color:red;">Address doesn't contain special characters</label>
+            </div>
+            <div class="form-group">
+              <label for="address2">Address Line 2</label>
+              <input type="text" name="billing_address2" id="address2" placeholder="Enter your address line 2" onblur="addressLcheck()" required>
+              <label id="adLlabel" for="address2" style="display: none; color:red;">This field is required</label>
+              <label id="adLlabel-01" for="address2" style="display: none; color:red;">Address doesn't start with a number</label>
+              <label id="adLlabel-02" for="address2" style="display: none; color:red;">Address doesn't contain special characters</label>
+            </div>
+            <div class="form-group">
+              <label for="city">City/Town *</label>
+              <input type="text" name="city" id="city" placeholder="Enter your city/town" onblur="addresscheck()" required>
+              <label id="adlabel" for="city" style="display: none; color:red;">This field is required</label>
+              <label id="adlabel-01" for="city" style="display: none; color:red;">Address doesn't start with a number</label>
+              <label id="adlabel-02" for="city" style="display: none; color:red;">Address doesn't contain special characters</label>
+            </div>
+            <div class="form-group">
+              <label for="state">State/County *</label>
+              <input type="text" name="state" id="state" required placeholder="Enter your state/county">
+            </div>
+            <div class="form-group">
+              <label for="zipcode">Postcode/ZIP *</label>
+              <input type="text" name="zipcode" id="zipcode" required placeholder="Enter your postcode/ZIP">
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+              <button class="btn btn-default" type="submit">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center">
+    <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Add Address</a>
+  </div>
+</div>
+
+
+        <form id="checkout-form">
+
+          <input type="text" name="userId" id="" value="{{user._id}}" hidden>
+          {{!-- {{#if user}}
+          <input required="" class="form-control square" name="name" type="text" value="{{user.name}}" hidden>
+          <input required="" class="form-control square" name="phone" type="phone" value="{{user.number}}" hidden>
+          <input required="" class="form-control square" name="Email" type="email" value="{{user.email}}" hidden>
+          {{/if}} --}}
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-25">
+                <h4>Checkout</h4>
+              </div>
+              <div class="payment_method">
+                <div class="mb-25">
+                  <h5>Select a delivery address</h5>
+                </div>
+
+                <div class="payment_option">
+                  <div class="container">
+                    <div class="row">
+
+
+
+                      {{#each addresses}}
+                      <div class="col-lg-6 mt-10">
+                        <div class="payment_method">
+                          <div class="payment_option">
+                            <div class="custome-radio">
+                              <input class="form-check-input" required="" type="radio" name="address"
+                                value="{{this._id}}" id="{{this._id}}" checked="">
+                              <label class="form-check-label" for="{{this._id}}" data-bs-toggle="collapse"
+                                data-target="#checkPayment" aria-controls="checkPayment">
+                                <div class="card">
+                                  <div class="card-header">
+                                    <h5 class="mb-0"></h5>
+                                  </div>
+                                  <div class="card-body">
+                                    <address>
+                                      {{this.name}}<br>
+                                      {{this.phone}}
+                                      <br>
+                                      {{this.billing_address}}<br>
+                                      {{this.billing_address2}}
+                                      <br>{{this.city}}<br>{{this.state}}
+                                    </address>
+                                    <p>{{this.pincode}}</p>
+                                    <a href="/editAddress/{{this._id}}" class="btn-small">Edit</a>
+                                    <a href="/deleteAddress/{{this._id}}" style="margin-left:100px;" class="btn-small"
+                                      onclick=" return confirm('Do you want to delete Shipping Address?Are you sure?')">Delete</a>
+
+                                  </div>
+                                </div>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="row">
+                  <div class="ship_detail">
+                    <div class="form-group">
+                      <div class="chek-form">
+                        <div class="custome-checkbox">
+                          <input class="form-check-input" type="checkbox" name="checkbox" id="differentaddress">
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="order_review">
+                <div class="mb-20">
+                  <h4>Your Orders</h4>
+                </div>
+                <div class="table-responsive order_table text-center">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th colspan="2">Product</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {{#each products}}
+                      <tr>
+                        <td class="image product-thumbnail"><img src="/product-images/{{this.product.images.[0]}}"
+                            alt="#">
+                        </td>
+                        <td>
+                          <h5><a href="/productDetails/{{this.product._id}}">{{this.product.Name}}</a></h5> <span
+                            class="product-qty">x
+                            <span id="{{this.product._id}}">{{this.quantity}}</span></span>
+                        </td>
+
+
+                        <td>₹{{multiply this.product.Price this.quantity}}</td>
+                        {{/each}}
+                      </tr>
+
+                      <th>SubTotal</th>
+                      <td class="product-subtotal" colspan="2"> ₹<span id="amounttotal">{{total}}</span></td>
+                      </tr>
+                      <tr>
+                        <th>Shipping</th>
+                        <td colspan="2"><em>Free Shipping</em></td>
+                      </tr>
+                      <div class="col-md-6">
+
+
+                        <th>Coupon</th>
+                        <tr>
+                          <td colspan="2">
+                            {{!-- <h2>Apply Coupon</h2> --}}
+                            <form id="applyCouponForm">
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="couponName" name="coupon"
+                                  placeholder="Enter coupon code">
+                                <div class="input-group-append">
+                                  <button
+                                    class="flex-c-m stext-101 size-118 bg8 bor13 hov-btn3 trans-04 pointer btn btn-info  "
+                                    id="applyCouponBtn" onclick="applyCoupon(event)">Apply Coupon</button>
+                                </div>
+                              </div>
+                            </form>
+                          </td>
+
+
+                          <td colspan="2">
+                            {{!-- <h2>Remove Coupon</h2> --}}
+                            <form id="removeCouponForm">
+                              <div class="input-group">
+                                <button onclick="removeCoupon(event)"
+                                  class="flex-c-m stext-101 size-118 bg8 bor13 hov-btn3 trans-04 btn btn-danger">Remove
+                                  Coupon</button>
+                              </div>
+                            </form>
+                          </td>
+                        </tr>
+                        {{!-- <td colspan="2"><em><input type="text" id="couponName" name="coupon"
+                              class="form-control form-control-lg" /></span>&nbsp;</em></td> --}}
+                        <span>Discount Percentage</span> <span id="percentage"> %</span>
+                        </tr>
+
+                        <tr>
+                          <th>Total</th>
+                          <td colspan="2" class="product-subtotal"> ₹<span id="total">{{total}}</span>
+                          </td>
+                        </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+                <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                <div class="payment_method">
+                  <div class="mb-25">
+                    <h5>Payment</h5>
+                  </div>
+                  <div class="payment_option">
+                    <div class="custome-radio">
+                      <input class="form-check-input" required="" type="radio" name="payment-method" value="COD"
+                        id="exampleRadios2" checked="">
+                      <label class="form-check-label" for="exampleRadios2" data-bs-toggle="collapse"
+                        data-target="#bankTranfer" aria-controls="bankTranfer">Cash On Delivery</label>
+                      <div class="form-group collapse in" id="bankTranfer">
+                        <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum available, but
+                          the
+                          majority have suffered alteration. </p>
+                      </div>
+                    </div>
+                    <div class="custome-radio">
+                      <input class="form-check-input" required="" type="radio" name="payment-method" value="WALLET"
+                        id="exampleRadios3" checked="">
+                      <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse"
+                        data-target="#bankTranfer" aria-controls="bankTranfer">Wallet</label>
+                      <div class="form-group collapse in" id="bankTranfer">
+                        <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum available, but
+                          the
+                          majority have suffered alteration. </p>
+                      </div>
+                    </div>
+                    <div class="custome-radio">
+                      <input class="form-check-input" required="" type="radio" name="payment-method" value="ONLINE"
+                        id="exampleRadios4" checked="">
+                      <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse"
+                        data-target="#checkPayment" aria-controls="checkPayment">Razorpay</label>
+                      <div class="form-group collapse in" id="checkPayment">
+                        <p class="text-muted mt-5">Please send your cheque to Store Name, Store Street, Store Town,
+                          Store
+                          State / County, Store Postcode. </p>
+                      </div>
+                    </div>
+
+
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-fill-out btn-block mt-30">Place your order</button>
+              </div>
+            </div>
+          </div>
+
+          {{!-- checkoutform --}}
+        </form>
+
+      </div>
+    </section>
+  </main>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+
+  $("#checkout-form").submit((e) => {
+    e.preventDefault()
+    console.log("ORDER ");
+    $.ajax({
+      url: '/place-order',
+      method: 'post',
+      data: $('#checkout-form').serialize(),
+      success: (response) => {
+        console.log(response);
+        if (response.codSuccess) {
+          location.href = '/order-success'
+        }
+        else if (response.walletSuccess) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Wallet Payment Successfull!!!.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            location.href = '/order-success';
+          });
+
+        }
+        else if (response.outOfCash) {
+          Swal.fire({
+            title: 'Error!',
+            text: 'Insufficient balance amount in the wallet',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+
+        }
+        else {
+          console.log(response)
+          razorpayPayment(response)
+
+        }
+      }
+    })
+  })
+
+  function razorpayPayment(order) {
+    var options = {
+      "key": "rzp_test_srWwsiEgeprBon", // Enter the Key ID generated from the Dashboard
+      "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      "currency": "INR",
+      "name": "E.com", //your business name
+      "description": "Test Transaction",
+      "image": "/assets/imgs/theme/E.Com.ico",
+      "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      "handler": function (response) {
+
+
+        verifyPayment(response, order)
+      },
+      "prefill": {
+        "name": "Gaurav Kumar", //your customer's name
+        "email": "gaurav.kumar@example.com",
+        "contact": "9000090000"
+      },
+      "notes": {
+        "address": "Razorpay Corporate Office"
+      },
+      "theme": {
+        "color": "#3399cc"
+      }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+  }
+  function verifyPayment(payment, order) {
+    $.ajax({
+      url: '/verify-payment',
+      data: {
+        payment,
+        order
+      },
+      method: 'post',
+      success: (response) => {
+        if (response.status) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Your payment has been verified.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            location.href = '/order-success';
+          });
+        } else {
+          Swal.fire({
+            title: 'Error!',
+            text: 'Your payment failed.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      }
+    });
+  }
+
+</script>
+<script>
+
+  
+  function applyCoupon(event) {
+    event.preventDefault();
+    let coupon = document.getElementById('couponName').value;
+
+    $.ajax({
+      url: '/applyCoupon',
+      data: { coupon },
+      method: 'post',
+      success: (response) => {
+        if (response.verify) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Your Coupon has been verified.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+          console.log("hey hey hey", response);
+          document.getElementById('total').innerHTML = response.amount;
+          document.getElementById("applyCouponBtn").hidden = true;
+          // Other actions if needed
+        } else {
+          Swal.fire({
+            title: 'Coupon Failed!',
+            text: 'The coupon verification failed.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+          console.log("hoy hoy hohy");
+          document.getElementById('discount').innerHTML = "₹ " + 0;
+          document.getElementById('total').innerHTML = "₹ " + response.Total;
+          document.getElementById('totalItem').innerHTML = "₹" + response.totalAmount;
+          document.getElementById('percentage').innerHTML = 0 + "%";
+
+          // Handle other error messages if needed
+        }
+      }
+    });
+  }
+  function removeCoupon(event) {
+    event.preventDefault();
+    let coupon = document.getElementById('couponName').value;
+
+    $.ajax({
+      url: '/removeCoupon',
+      data: { coupon },
+      method: 'post',
+      success: (response) => {
+        swal({
+          title: "Coupon Deleted!",
+          text: "You have removed the coupon!",
+          icon: "success",
+          button: "OK!",
+        }).then(() => {
+
+          document.getElementById("deleteCouponBtn").hidden = true;
+
+          document.getElementById('total').innerHTML = '₹ ' + response.totalAmount;
+        });
+      }
+    });
+  }
+
+  
+</script>
+<script>
+
+  function addresscheck() {
+    let name = document.getElementById("address").value
+    let nm = null
+    nm = name.trim()
+    var letters = /^[A-Za-z]+$/;
+    var spc = /^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+[A-Za-z]*$/;
+    document.getElementById("address").value = nm;
+    if (nm == "" || name == null) {
+      document.getElementById("adlabel").style.display = "block"
+      return false
+    }
+    else if (!isNaN(nm[0])) {
+      document.getElementById("adlabel").style.display = "none"
+      document.getElementById("adlabel-01").style.display = "block"
+      return false
+    }
+    else if (nm.match(spc)) {
+      document.getElementById("adlabel").style.display = "none"
+      document.getElementById("adlabel-01").style.display = "none"
+      document.getElementById("adlabel-02").style.display = "block"
+      return false
+    }
+    else {
+      document.getElementById("adlabel").style.display = "none"
+      document.getElementById("adlabel-01").style.display = "none"
+      document.getElementById("adlabel-02").style.display = "none"
+      return true
+
+    }
+  }
+
+  function addressLcheck() {
+    let name = document.getElementById("address2").value
+    let nm = null
+    nm = name.trim()
+    var letters = /^[A-Za-z]+$/;
+    var spc = /^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+[A-Za-z]*$/;
+    document.getElementById("address2").value = nm;
+    if (nm == "" || name == null) {
+      document.getElementById("adLlabel").style.display = "block"
+      return false
+    }
+    else if (!isNaN(nm[0])) {
+      document.getElementById("adLlabel").style.display = "none"
+      document.getElementById("adLlabel-01").style.display = "block"
+      return false
+    }
+    else if (nm.match(spc)) {
+      document.getElementById("adLlabel").style.display = "none"
+      document.getElementById("adLlabel-01").style.display = "none"
+      document.getElementById("adLlabel-02").style.display = "block"
+      return false
+    }
+    else {
+      document.getElementById("adLlabel").style.display = "none"
+      document.getElementById("adLlabel-01").style.display = "none"
+      document.getElementById("adLlabel-02").style.display = "none"
+      return true
+
+    }
+  }
+
+</script>

@@ -1,0 +1,36 @@
+<section class="d-flex justify-content-center mt-5">
+  <form action="/admin" method="post">
+    <!-- Email input -->
+    <div class="form-outline mb-4">
+      <input type="email" name="email"id="form2Example1" class="form-control" />
+      <label class="form-label"  for="form2Example1">Email address</label>
+    </div>
+
+    <!-- Password input -->
+    <div class="form-outline mb-4">
+      <input type="password"name="password" id="form2Example2" class="form-control" />
+      <label class="form-label" for="form2Example2">Password</label>
+    </div>
+
+    <!-- 2 column grid layout for inline styling -->
+    <div class="row mb-4">
+      {{!-- <div class="col d-flex justify-content-center">
+        <!-- Checkbox -->
+    
+          
+        </div>
+      </div> --}}
+
+      <div class="col">
+        <!-- Simple link -->
+        <a href="#!">Forgot password?</a>
+      </div>
+    </div>
+
+    <!-- Submit button -->
+    <button type="submit" href="/admin"class="btn btn-primary !important btn-block mb-4">
+    Login 
+    </button>
+    
+  </form>
+</section>

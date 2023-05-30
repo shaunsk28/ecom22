@@ -1,0 +1,73 @@
+<section>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="text-center">Add Product</h2>
+
+                <form action="/admin/add-products" id="form" enctype="multipart/form-data" method="post" name="myform"
+                    onsubmit="return validateImage()">
+                    <label for="">Name</label>
+                    <input type="text" name="Name" class="form-control">
+
+                    <label for="">Category</label>
+
+                    <select class="form-select" name="category" aria-label="Default select example">
+                        {{!-- <option>Select</option> --}}
+                        {{#each category}}
+                        <option>{{this.category}}</option>
+                        {{/each}}
+                    </select>
+
+
+                    <label for="">Price</label>
+                    <input type="text" name="Price" class="form-control">
+
+                    <label for="">Description</label>
+                    <input type="text" name="Description" class="form-control">
+
+                    <label for="">STOCK</label>
+                    <input type="number" class="form-control item" name="Stock" placeholder="Product Stock" required>
+
+                    <label for="Image">Image</label>
+                    <img src="" alt="" style="width: 100px; height:auto  " id="imgView" class="pt-3">
+                    <input type="file" class="form-control" name="file" onchange="viewImage(event)" required>
+
+
+                    <img src="" alt="" style="width: 100px; height:auto  " id="imgView1" class="pt-3">
+                    <input type="file" class="form-control" name="file" onchange="viewImage1(event)" required>
+
+
+                    <img src="" alt="" style="width: 100px; height:auto  " id="imgView2" class="pt-3">
+                    <input type="file" class="form-control" name="file" onchange="viewImage2(event)" required>
+
+
+                    <img src="" alt="" style="width: 100px; height:auto  " id="imgView3" class="pt-3">
+                    <input type="file" class="form-control" name="file" onchange="viewImage3(event)" required>
+
+                    <button type="submit" class="btn btn-success mt-4">Submit</button>
+                    <a href="/admin/view-products"><button type="button" class="btn btn-primary mt-4">View
+                            products</button></a>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    function viewImage(event) {
+        console.log("11111111111",event,"11111111111")
+        document.getElementById('imgView').src = event.target = URL.createObjectURL(event.target.files[0])
+    }
+    function viewImage1(event) {
+        document.getElementById('imgView1').src = event.target = URL.createObjectURL(event.target.files[0])
+    }
+    function viewImage2(event) {
+        document.getElementById('imgView2').src = event.target = URL.createObjectURL(event.target.files[0])
+    }
+    function viewImage3(event) {
+        document.getElementById('imgView3').src = event.target = URL.createObjectURL(event.target.files[0])
+    }
+</script>

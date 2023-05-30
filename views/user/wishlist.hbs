@@ -1,0 +1,143 @@
+<main class="main">
+    <section class="mt-50 mb-50">
+        <div class="container">
+            {{#if isWishListEmpty}}
+
+            <h1 style="margin-left:300px; margin-top:50px;">Wishlist is Empty</h1>
+            {{/if}}
+            {{#unless isWishListEmpty}}
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table shopping-summery text-center">
+                            <thead>
+                                <tr class="main-heading">
+                                    <th scope="col" colspan="2">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Stock Status</th>
+                                    <th scope="col">Action</th>
+                                    <th scope="col">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each products}}
+                                <tr>
+                                    <td class="image product-thumbnail"><img style="width: 70px; height:70px;"
+                                            src="/product-images/{{this.images.[0]}}" alt=""></td>
+                                    <td class="product-des product-name">
+                                        <h5 class="product-name"><a
+                                                href="/productDetails/{{this.product._id}}">{{this.product.Name}}</a>
+                                        </h5>
+                                        <p class="font-xs">{{this.product.Description}}
+                                        </p>
+                                    </td>
+                                    <td class="price" data-title="Price">₹<span
+                                            id="price-{{this.product._id}}">{{this.product.Price}}</span></td>
+                                    <td class="text-center" data-title="Stock">
+
+                                        {{#if stock }}
+
+                                        <span class="text-danger font-weight-bold">Out of stock</span>
+
+                                        {{else}}
+
+                                        <span class="color3 font-weight-bold">In Stock</span>
+
+                                        {{/if}}
+
+                                    </td>
+                                    <td class="text-right" data-title="Cart">
+                                        {{#if stock}}
+
+                                        <button class="btn btn-sm btn-secondary"><i
+                                                class="fi-rs-headset mr-5"></i>Contact Us</button>
+
+
+                                        {{else}}
+
+                                        <button type="submit" onclick="addToCart('{{this.product._id}}')"
+                                            class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to
+                                            cart</button>
+
+                                        {{/if}}
+
+
+
+
+
+                                    </td>
+                                    <td class="action" data-title="Remove"
+                                        onclick="removeWishListProduct('{{this._id}}','{{this.product._id}}')"><a
+                                            href="#"><i class="fi-rs-trash"></i></a>
+                                    </td>
+
+
+                                </tr>
+                                {{/each}}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/unless}}
+    </section>
+</main>
+<script>
+
+    function removeWishListProduct(wishListId, proId) {
+        $.ajax({
+            url: '/remove-wishlist-product',
+            data: {
+                wishlist: wishListId,
+                product: proId,
+            },
+            method: 'post',
+            success: (response) => {
+                if (response.removeProduct) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Removed from wishlist',
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+            }
+        });
+    }
+
+
+function addToCart(proId) {
+        $.ajax({
+            url: '/addToCart/' + proId,
+            method: 'get',
+            success: (response) => {
+
+                if (response.status) {
+                    console.log(response.status)
+                    let count = $('#cartCount').html()
+                    count = parseInt(count) + 1
+                    console.log(count, "hhhhhhhhh");
+
+                    $("#cartCount").html(count)
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Cart',
+                    })
+                } else {
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Out of Stock',
+                    }).then(() => {
+                        location.reload();
+                    });
+
+
+                }
+
+            }
+        })
+    }
+</script>
