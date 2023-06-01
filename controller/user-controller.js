@@ -1,23 +1,15 @@
 var db = require('../config/connection')
 var session = require('express-session')
 var adminHelpers = require('../helpers/admin-helpers');
-const { validationResult } = require('express-validator');
+
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+
 var productHelpers = require('../helpers/product-helpers');
 const userHelpers = require('../helpers/user-helpers');
 const async = require('hbs/lib/async');
 const collections = require('../config/collections');
 const Razorpay=require('razorpay')
-function createTransporter(userEmail, userPassword) {
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: userEmail,
-      pass: userPassword
-    }
-  });
-}
+
 require('dotenv').config()
 module.exports = {
   getSignUp: (req, res) => {
@@ -405,10 +397,12 @@ module.exports = {
       let amount = totalPrice - discountAmount;
 
       amount = parseInt(amount)
+      
 
 
       await userHelpers.placeOrder(req.body, products, amount,address)
-        .then((orderId, amount) => {
+        .then((orderId) => {
+          console.log(amount,"gulgulesh");
           if (req.body['payment-method'] === 'COD') {
             res.json({ codSuccess: true })
           }
@@ -430,6 +424,7 @@ module.exports = {
 
         }
           else {
+            console.log(amount,"shonesh");
             userHelpers.generateRazorpay(orderId, amount)
               .then((response) => {
                 // console.log(response)

@@ -5,7 +5,7 @@ const bcrypt=require('bcrypt');
 const { body } = require('express-validator');
 const { resolve } = require('promise');
 const Razorpay = require('razorpay')
-var instance = new Razorpay({
+const instance = new Razorpay({
   key_id: 'rzp_test_srWwsiEgeprBon',
   key_secret: 'ovkARhoaZOQ7sAlo7AGQaFE0',
 });
@@ -18,7 +18,7 @@ var AUTH_TOKEN="c19c910032304deec3178a61dcbc25c1"
 
 const Client=require("twilio")(ACCOUNT_SID,AUTH_TOKEN);
 // console.log(ACCOUNT_SID,"");
-var ObjectId=require('mongodb').ObjectId
+const ObjectId=require('mongodb').ObjectId
 module.exports={
     doSignup:(userData)=>{
         // console.log(userData.password);
@@ -346,7 +346,7 @@ module.exports={
         })
     
       },
-       placeOrder: (order, products, total,address,newAddressId) => {
+       placeOrder: (order, products, total,address) => {
         console.log(address,"11111111");
         return new Promise(async(resolve, reject) => {
           let status = order['payment-method'] === 'COD' ? 'placed' : 'pending';
@@ -386,7 +386,8 @@ module.exports={
                 db.get().collection(collection.CART_COLLECTION).deleteOne({ user: ObjectId(order.userId) });
               }
              
-              console.log("RESPPPPP", response.insertedId);
+              console.log("RESPPPPP", response.insertedId, );
+              console.log(orderObj.totalAmount ,"fddddddddddddddddddddddddddddddddddddddddddd");
               resolve(response.insertedId)
     
             })

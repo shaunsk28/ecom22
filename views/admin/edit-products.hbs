@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-6">
                 <h2 class="text-center">Edit Product</h2>
-                <form action="/admin/edit-products/{{product._id}}" enctype="multipart/form-data" method="POST">
+                <form action="/admin/edit-products/{{product._id}}" enctype="multipart/form-data" method="POST" onsubmit="return validateForm()">
                     <label for="">Name</label>
                     <input type="text" name="Name" class="form-control" value="{{product.Name}}">
                     {{!-- <input type="text" name="_id" class="form-control" value="{{product._id}}" hidden> --}}
@@ -20,13 +20,14 @@
                     </select>
 
                     <label for="">Price</label>
-                    <input type="text" name="Price" class="form-control" value="{{product.Price}}">
+                    <input type="number" name="Price" id="price" class="form-control" value="{{product.Price}}">
+                    <div id="priceError" style="color: red; display: none;">Price cannot be a negative number</div>
 
                     <label for="">Description</label>
-                    <input type="text" name="Description" class="form-control" value="{{product.Description}}">
+                    <input type="text" id="stock" name="Description" class="form-control" value="{{product.Description}}">
                     <label for="">STOCK</label>
                     <input type="number" class="form-control item" name="Stock" value="{{product.Stock}}"  >
-
+                     <div id="stockError" style="color: red; display: none;">Stock cannot be a negative number</div>
                     <label for="Image">Image</label>
 
                     <img src="/uploads/{{this.product.images.[0]}}" alt="" style="width: 100px; height:auto  "
@@ -77,4 +78,28 @@
     document.getElementById('imgView4').src = event.target = URL.createObjectURL(event.target.files[0])
   }
  
+</script>
+<script>
+    function validateForm() {
+        var priceInput = document.getElementById("price");
+        var price = parseFloat(priceInput.value);
+
+        if (price < 0) {
+            alert("Price cannot be a negative number");
+            priceInput.focus();
+            return false;
+        }
+        var stockInput = document.getElementById("stock");
+        var stock = parseInt(stockInput.value);
+
+        if (stock < 0) {
+           alert("Stock cannot be a negative number");
+            var stockError = document.getElementById("stockError");
+            stockError.style.display = "block";
+            stockInput.focus();
+            return false;
+        }
+
+        return true;
+    }
 </script>

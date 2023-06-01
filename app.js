@@ -7,7 +7,7 @@ var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
 var hbs=require('express-handlebars');
 var app = express();
-const jwt=require('jsonwebtoken')
+
 const Swal = require('sweetalert');
 const ConnectMongoDBSession=require('connect-mongodb-session')
 var db=require('./config/connection')
@@ -16,8 +16,6 @@ const mongoDbsession=new ConnectMongoDBSession(session)
 var Handlebars=require('handlebars');
 const crypto = require('crypto');
 const Razorpay=require('razorpay')
-const nodemailer = require('nodemailer');
-const { body, validationResult } = require('express-validator');
 const { Connect } = require('twilio/lib/twiml/VoiceResponse');
 
 const helpers = require('handlebars-helpers')();
