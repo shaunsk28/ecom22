@@ -1,4 +1,6 @@
 const mongoClient=require('mongodb').MongoClient
+const dotenv=require("dotenv")
+dotenv.config();
 const state ={
     db:null 
 }
