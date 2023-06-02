@@ -1,14 +1,14 @@
-var db = require('../config/connection')
-var session = require('express-session')
+// var db = require('../config/connection')
+// var session = require('express-session')
 var adminHelpers = require('../helpers/admin-helpers');
 
-const crypto = require('crypto');
+// const crypto = require('crypto');
 
 var productHelpers = require('../helpers/product-helpers');
 const userHelpers = require('../helpers/user-helpers');
-const async = require('hbs/lib/async');
-const collections = require('../config/collections');
-const Razorpay=require('razorpay')
+// const async = require('hbs/lib/async');
+// const collections = require('../config/collections');
+// const Razorpay=require('razorpay')
 
 require('dotenv').config()
 module.exports = {

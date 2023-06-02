@@ -1,5 +1,5 @@
 
-const { validationResult } = require('express-validator');
+
 const userHelpers = require('../helpers/user-helpers');
 const async = require('hbs/lib/async');
 const adminController = require('../controller/admin-controller');
@@ -83,17 +83,7 @@ module.exports={
   //   }
   //   }
   // },
-  validateForgotPassword: [
-    // Middleware to validate the input fields in the forgot password form
-    userHelpers.validateForgotPassword,
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.render('user/forgotPassword', { errors: errors.array() });
-      }
-      next();
-    }
-  ],
+  
   
   
     

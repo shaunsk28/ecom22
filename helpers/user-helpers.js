@@ -2,8 +2,8 @@ var db = require('../config/connection')
 var collection=require('../config/collections');
 const async = require('hbs/lib/async');
 const bcrypt=require('bcrypt');
-const { body } = require('express-validator');
-const { resolve } = require('promise');
+// const { body } = require('express-validator');
+// const { resolve } = require('promise');
 const Razorpay = require('razorpay')
 const instance = new Razorpay({
   key_id: 'rzp_test_srWwsiEgeprBon',

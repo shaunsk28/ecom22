@@ -8,15 +8,12 @@ var adminRouter = require('./routes/admin');
 var hbs=require('express-handlebars');
 var app = express();
 
-const Swal = require('sweetalert');
+
 const ConnectMongoDBSession=require('connect-mongodb-session')
 var db=require('./config/connection')
 var session=require('express-session')
 const mongoDbsession=new ConnectMongoDBSession(session)
 var Handlebars=require('handlebars');
-const crypto = require('crypto');
-const Razorpay=require('razorpay')
-const { Connect } = require('twilio/lib/twiml/VoiceResponse');
 
 const helpers = require('handlebars-helpers')();
 
