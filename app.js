@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, "public/admin-assets")));
 // app.use(nocache());
 app.use(session({name : 'codeil',secret : 'something',resave :false,saveUninitialized: true,
 store:new mongoDbsession({
-  uri:"mongodb://localhost:27017",
+  uri:"mongodb+srv://shauns4422:vZdmM7QlSSboBbrY@cluster0.cldxdfv.mongodb.net/ecom22?retryWrites=true&w=majority",
   collection:"session"
 })
 ,cookie:{maxAge:(1000 * 60 * 100)} }))
