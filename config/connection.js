@@ -1,9 +1,9 @@
 const mongoClient=require('mongodb').MongoClient
 const state ={
-    db:null
+    db:null 
 }
 module.exports.connect=function(done){
-    const url='mongodb+srv://shauns4422:vZdmM7QlSSboBbrY@cluster0.cldxdfv.mongodb.net/ecom22?retryWrites=true&w=majority'
+    const url=process.env.MONGODB
     const dbname='ecom22'
     mongoClient.connect(url,(err,data)=>{
         if(err) return done(err)
