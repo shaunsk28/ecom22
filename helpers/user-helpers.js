@@ -887,98 +887,7 @@ module.exports={
           }
         });
       },
-      
-    //   applyCoupon:(details, userId, date,totalAmount)=>{
-    //     console.log(details,"RaRARARARARA");
-    //     return new Promise(async(resolve,reject)=>{
-    //       let response={};
-          
-    //       let coupon=await db.get().collection(collection.COUPON_COLLECTION).findOne({name:details.coupon});
-    //       if(coupon){
-    
-    //         const expDate=new Date(coupon.expiryDate)
-           
-    //         response.couponData = coupon;
-    //         console.log(coupon,"Chukaprasad");
-           
-    
-    //         let user=await db.get().collection(collection.COUPON_COLLECTION).findOne({name:details.coupon,Users:ObjectId(userId)})
-             
-    //         if(user){
-              
-    //           response.used="Coupon Already Applied"
-    //           resolve(response)
-    //           console.log("Already Applied");
-             
-    
-    //         }else{
-    
-    //           if(date <= expDate){
-    
-    //               response.dateValid=true;
-    //               resolve(response);
-    
-    //               let total=totalAmount;
-    //               console.log('date ok');
-    
-    //               if(total >= coupon.minAmount){
-                    
-    //                 response.verifyMinAmount=true;
-    //                 resolve(response)
-    //                 console.log('min ok');
-    //                 console.log(total,"Local");
-    
-    //                 if(total <= coupon.maxDiscount){
-    
-    //                   response.verifyMaxAmount=true;
-    //                   resolve(response)
-    //                   console.log('max ok');
-    //                 }
-    //                 else{
-    //                   response.maxAmountMsg="Your Maximum Purchase should be"+ coupon.maxDiscount;
-    //                   response.maxAmount=true;
-    //                   resolve(response)
-    //                   console.log('max not ok');
-    //                 }
-    //               }
-    //               else{
-                    
-    //                 response.minAmountMsg="Your Minimum purchase should be"+coupon.minAmount;
-    //                 response.minAmount=true;
-    //                 resolve(response)
-    //               }   
-    
-    //           }else{
-    //             response.invalidDateMsg = 'Coupon Expired'
-    //             response.invalidDate = true
-    //             response.Coupenused = false
-    
-    //             resolve(response)
-    //             console.log('invalid date');
-    //           }
-    //         }
-            
-    //       }else{
-    //         response.invalidCoupon=true;
-    //         response.invalidCouponMsg="Invalid Coupon";
-    //         resolve(response)
-    //       }
-    
-    //       if(response.dateValid && response.verifyMaxAmount && response.verifyMinAmount)
-    //       {
-    //         response.verify=true;
-    //         db.get().collection(collection.CART_COLLECTION).updateOne({user:ObjectId(userId)},
-    //         {
-    //           $set:{
-    //             coupon:ObjectId(coupon._id)
-    //           }  
-    //         })
-    //         resolve(response)
-    //         console.log(response,"HUHUHUHUHUHUHUH");
-    //       }
-    //     })
-    //   },
-      
+     
       couponVerify:(userId)=>{
         return new Promise(async(resolve,reject)=>{
     console.log(userId,"99999999999999999999999999");
@@ -999,24 +908,7 @@ module.exports={
     
       },
    
-    // couponVerify: (userId) => {
-    //   return new Promise(async (resolve, reject) => {
-    //     let userCart = await db.get().collection(collection.CART_COLLECTION).findOne({ user: ObjectId(userId) });
-      
-    //     if (userCart && userCart.coupon) {
-    //       let couponData = await db.get().collection(collection.COUPON_COLLECTION).findOne({ _id: userCart.coupon.toString() });
-          
-    //       if (couponData && couponData.status === 'active') {
-    //         resolve(couponData);
-    //       } else {
-    //         resolve(null); // Invalid or expired coupon
-    //       }
-    //     } else {
-    //       resolve(null); // No coupon found
-    //     }
-    //   });
-    // },
-      
+    
       removeCoupon:(userId)=>{
         return new Promise(async(resolve,reject)=>{
             await db.get().collection(collection.CART_COLLECTION).updateOne({user:ObjectId(userId)},{
@@ -1570,18 +1462,7 @@ newPass = await bcrypt.hash(newPass, 10);
     console.log(err,"error in update password")
   }
 },
-// updatePassword: (newPassword, userData) => {
-//   return new Promise(async (resolve, reject) => {
-//     try {
-//       const saltRounds = 10;
-//       const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-//       await db.get().collection(collection.USER_COLLECTION).updateOne({ _id: userData._id }, { $set: { password: hashedPassword } });
-//       resolve();
-//     } catch (error) {
-//       reject(error);
-//     }
-//   });
-// },
+
 
       
 

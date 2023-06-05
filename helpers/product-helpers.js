@@ -34,64 +34,7 @@ module.exports={
           resolve(count)
         })
       },
-    // getAllProducts: (search) => {
-    //     return new Promise(async (resolve, reject) => {
-    //       try {
-            
-    //         const products = await db.get().collection(collection.PRODUCT_COLLECTION)
-    //           .find({
-    //             $or: [
-    //               { Name: { $regex: '.*' + search + '.*', $options: 'i' } },
-    //               { category: { $regex: '.*' + search + '.*', $options: 'i' } },
-    //               { Price: { $regex: '.*' + search + '.*', $options: 'i' } },
-    //               { Description: { $regex: '.*' + search + '.*', $options: 'i' } }
-    //             ]
-    //           })
-    //           .toArray();
-    //           console.log("qqqqqq",products,"eeeeee" );
-    //         resolve(products);
-            
-    //       } catch (error) {
-    //         reject(error);
-    //       }
-    //     });
-    //   },
-    //   getProductsPageCount: (search) => {
-    //     return new Promise(async (resolve, reject) => {
-    //       try {
-            
-    //         const products = await db
-    //           .get()
-    //           .collection(collection.PRODUCT_COLLECTION)
-    //           .find({
-    //             $or: [
-    //               { Name: { $regex: '.*' + search + '.*', $options: 'i' } },
-    //               { category: { $regex: '.*' + search + '.*', $options: 'i' } },
-    //               { Price: { $regex: '.*' + search + '.*', $options: 'i' } },
-    //               { Description: { $regex: '.*' + search + '.*', $options: 'i' } }
-    //             ]
-    //           })
-    //           .sort({ Price: 1 })
-              
-    //           .toArray();
-    //         const count = await db
-    //           .get()
-    //           .collection(collection.PRODUCT_COLLECTION)
-    //           .countDocuments({
-    //             $or: [
-    //               { Name: { $regex: '.*' + search + '.*', $options: 'i' } },
-    //               { category: { $regex: '.*' + search + '.*', $options: 'i' } },
-    //               { Price: { $regex: '.*' + search + '.*', $options: 'i' } },
-    //               { Description: { $regex: '.*' + search + '.*', $options: 'i' } }
-    //             ]
-    //           });
-    //         resolve(count);
-    //       } catch (error) {
-    //         reject(error);
-    //       }
-    //     });
-    //   },
-      
+    
 
     deleteProduct:(productId)=>{
         // console.log(productId,"1111111111111111111111111111111111111111111");
@@ -136,8 +79,7 @@ module.exports={
             console.log(categoryOne.category,"hhhhhhhhh");
           let categoryDetails=await db.get().collection(collection.PRODUCT_COLLECTION).find({category:catName}).toArray()
           console.log("11111111111111111",categoryDetails,"111111111111111111111111111111111")
-        //   let products=await db.get().collection(collection.PRODUCT_COLLECTION).find({category:categoryDetails.products}).toArray()
-        //   console.log(products,"heyy")
+        
           resolve(categoryDetails)
         })
       },

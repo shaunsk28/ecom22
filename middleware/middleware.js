@@ -40,49 +40,7 @@ module.exports={
       }
          
     },      
-  // },
-  // isActive : () => {
-  //   return async (req, res, next) => {
-  //     console.log("middleawerw");
-  //     try {
-  //       const userId = req.session.user._id
-  //       // const user = await adminHelpers.getAllUsers(userId)
-  //       const user= await adminHelpers.updateUserStatus(userId);
-  //       console.log(user);
-  //       if (!user.isblocked) {
-          
-  //         next()
-  //       } else {
-  //         req.session.user = null
-  //         res.redirect('/login')
-  //       }
-  //     } catch (error) {
-  //       console.error(error)
-  //       res.redirect('/error')
-  //     }
-  //   }
-  //  },
-  //  checkUser:()=> {
-  //     return async (req, res, next) => {
-  //       try {
-  //     const userId = req.session.userId;
-  //     // const Active = await adminHelpers.checkUserStatus(userId);
-  //     const user = await adminHelpers.getAllUsers(userId)
   
-  //     if (!Active) {
-  //       await adminHelpers.updateUserStatus(userId, false);
-  //       req.session = null
-  //       res.redirect('/login');
-  //     } else {
-  //       next();
-  //     }
-  //   }
-  //   catch (error) {
-  //     console.error(error)
-  //     res.redirect('/error')
-  //   }
-  //   }
-  // },
   
   
   

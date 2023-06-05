@@ -11,29 +11,7 @@ module.exports={
             resolve(user)
         })
     }, 
-    // updateUserStatus:(blockUserId)=>{
-    //     return new Promise(async(resolve,reject)=>{
-    //      db.get().collection(collection.USER_COLLECTION).updateOne({_id:ObjectId(blockUserId)},
-    //      {  
-   
-    //        $set:{isblocked:true}
-    //      })
-    //     }).then((response)=>{
-    //      resolve()
-    //     })
-    //  },
-    //  setUserStatus:(unBlockUserId)=>{
-    //     return new Promise((resolve,reject)=>{
-    //      db.get().collection(collection.USER_COLLECTION).updateOne({_id:ObjectId(unBlockUserId)},
-    //      {
-    //        $set:{isblocked:false}
-    //      })
-    //     }).then((response)=>{
-        
-    //      resolve()
-   
-    //     })
-    //  },
+    
      updateUserStatus: (blockUserId) => {
       return new Promise(async (resolve, reject) => {
         try {

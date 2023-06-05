@@ -54,14 +54,10 @@ module.exports = {
     })
   },
   getHome: async (req, res) => {
-
-   
-      let wishlistCount= await userHelpers.getWishListCount(req.session._id);
-    
-    
     let user = req.session.user
+    let wishlistCount= await userHelpers.getWishListCount(req.session.user_id);
     let banner = await userHelpers.getBanner()
-    let cartCount = await userHelpers.getCartCount(req.session._id)
+    let cartCount = await userHelpers.getCartCount(req.session.user_id)
     productHelpers.getAllProducts({ isActive: true }).then((products) => {
       // console.log(products);
       res.render('user/home', { products, user, banner, cartCount,wishlistCount })
@@ -163,16 +159,15 @@ module.exports = {
     res.render('user/confirmOtp', { layout: null, })
   },
   postConfirmOtp: (req, res) => {
-    // console.log(req.body, "4444444444444444444444444")
-    // console.log(signupData, "12222222222222222222222");
+    
     userHelpers.doOTPConfirm(req.body, signupData).then((response) => {
 
       if (response.status) {
-        // console.log(response.status, "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+        
 
         req.session.loggedIn = true;
         req.session.user = signupData;
-        // console.log(signupData, "zzzzzzzzzzzzzzzzzzzzzzz");
+        
 
         res.redirect('/')
       } else {
@@ -180,47 +175,7 @@ module.exports = {
       }
     })
   },
-  // getforgotOtp: (req, res) => {
-  //   res.render('user/forgot', { layout: null });
-  // },
-  // let: signupData = 0,
-
-  // postforgotOtp: (req, res) => {
-  //   userHelpers.doOTP(req.body).then((response) => {
-  //     if (response.status) {
-  //       signupData = response.user;
-  //       console.log(signupData, "ttttttttt")
-
-  //       res.redirect('/confirm')
-
-  //     }
-  //     else {
-  //       res.redirect('/userOtp')
-  //     }
-  //   })
-
-  // },
-  // getConfirm: (req, res) => {
-  //   res.render('user/confirm', { layout: null, })
-  // },
-  // postConfirm: (req, res) => {
-  //   console.log(req.body, "4444444444444444444444444")
-  //   console.log(signupData, "12222222222222222222222");
-  //   userHelpers.doOTPConfirm(req.body, signupData).then((response) => {
-
-  //     if (response.status) {
-  //       console.log(response.status, "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
-
-  //       req.session.loggedIn = true;
-  //       req.session.user = signupData;
-      
-
-  //       res.render('/newPasword')
-  //     } else {
-  //       res.redirect('/confirm')
-  //     }
-  //   })
-  // },
+  
   getcartDetails: async (req, res) => {
     let products = await userHelpers.getCartProducts(req.session.user._id)
    
@@ -274,24 +229,7 @@ module.exports = {
         console.error(`The operation failed with error: ${error.message}`);
       });
   },
-  // getProfile:async(req,res)=>{
-
-  //   let total=await userHelpers.getTotalAmount(req.session.user._id);
-  //   let orders=await userHelpers.getUserOrders(req.session.user._id);
-  //   let cartCount=null
-  //   if(req.session.user){
-  //     cartCount=await userHelpers.getCartCount(req.session.user._id)
-
-  //   }
-  //   userHelpers.getAllAddresses(req.session.user._id)
-  //   .then((addresses)=>{ 
-  //     res.render('user/profile',{total,user:req.session.user,cartCount,addresses,orders})
-
-  //   })
-  //   .catch(error => {
-  //     console.error(`The operation failed with error: ${error.message}`);
-  //   });
-  // },getProfile: async (req, res) => {
+ 
   getProfile: async (req, res) => {
     try {
       const total = await userHelpers.getTotalAmount(req.session.user._id);
@@ -349,7 +287,7 @@ module.exports = {
   },
   postEditAddress: (req, res) => {
     let id = req.params.id
-    // console.log(req.body, "111111111111111111111111111111111111111111111");
+   
     userHelpers.updateAddress(id, req.body)
       .then(() => {
         res.redirect("/profile");
@@ -553,9 +491,9 @@ module.exports = {
     let order =await userHelpers.getOrderDetails(req.params.id);
     let refund=order.totalAmount
     let userId=req.session.user._id
-    // console.log(orderId);
+   
     userHelpers.addToWallet(userId,refund)
-    // console.log(orderId);
+    
     userHelpers.returnOrder(orderId)
       .then((response) => {
         res.redirect('/orders')
@@ -565,37 +503,7 @@ module.exports = {
       });
 
   },
-  //   postCouponApply:async(req,res)=>{
-  //     let user=req.session.user._id;
-  //     const date=new Date();
-  //     let totalAmount= await userHelpers.getTotalAmount(user)
-  //     let Total=totalAmount;
-
-  //     if(req.body.coupon == ''){
-  //         res.json({noCoupon:true,Total})
-  //     }
-  //     else
-  //     { 
-  //         let couponres=await userHelpers.applyCoupon(req.body,user,date,totalAmount)
-  //         if (couponres.verify) {
-
-  //         let discountAmount=(totalAmount * parseInt(couponres.couponData.couponPercentage))/100;
-  //         let amount = totalAmount - discountAmount
-  //         couponres.discountAmount = Math.round(discountAmount)
-  //         couponres.amount = Math.round(amount);
-  //         res.json(couponres)
-
-  //     }else{
-
-  //         couponres.Total=totalAmount;
-  //         res.json(couponres)
-
-  //     }
-
-  //     }
-
-
-  //  },
+  
   postCouponApply: async (req, res) => {
     let user = req.session.user._id;
     const date = new Date();
@@ -632,33 +540,6 @@ module.exports = {
 
 
   },
-  // // postCouponApply: async (req, res) => {
-  //   let user = req.session.user._id;
-  //   const date = new Date();
-  //   let totalAmount = await userHelpers.getTotalAmount(user);
-  //   let Total = totalAmount;
-
-  //   if (!req.body.coupon) {
-  //     res.json({ noCoupon: true, Total });
-  //   } else {
-  //     let couponres = await userHelpers.applyCoupon(req.body, user, date, totalAmount);
-  //     if (couponres.verify) {
-  //       let discountAmount = (totalAmount * parseInt(couponres.couponData.couponPercentage)) / 100;
-  //       let amount = totalAmount - discountAmount;
-  //       couponres.discountAmount = Math.round(discountAmount);
-  //       couponres.amount = Math.round(amount);
-  //       couponres.percentage = Math.round(couponres.couponData.couponPercentage);
-  //       console.log(couponres, "HIMONUTTA");
-  //       res.json(couponres);
-  //       console.log(Total, "Chukam");
-  //     } else {
-  //       couponres.Total = totalAmount;
-  //       console.log(Total, "Chukammmmmmmmm");
-  //       res.json(couponres);
-  //     }
-  //   }
-  // },
-
 
   postCouponRemove: async (req, res) => {
 
