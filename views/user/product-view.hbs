@@ -134,10 +134,7 @@
                                             <div class="product-extra-link2">
                                                 <button type="submit" onclick="addToCart('{{this.product._id}}')"
                                                     class="button button-add-to-cart">Add to cart</button>
-                                                {{!-- <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                    href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                                <a aria-label="Compare" class="action-btn hover-up"
-                                                    href="shop-compare.html"><i class="fi-rs-shuffle"></i></a> --}}
+                                                
                                             </div>
                                         </div>
                                         {{!-- <ul class="product-meta font-xs color-grey mt-50">
@@ -174,22 +171,38 @@
  new ImageZoom(document.getElementById("img-container2"), options);
  new ImageZoom(document.getElementById("img-container3"), options);
  new ImageZoom(document.getElementById("img-container4"), options);
-function addToCart(proId) {
-    $.ajax({
-      url: '/addToCart/' + proId,
-      method: 'get',
-      success: (response) => {
-  
-        if (response.status) {
-          let count = $('#cartCount').html()
-          count = parseInt(count) + 1;
-          console.log(count,"HUYYAMA");
-          $("#cartCount").html(count)
-        }
-        
-      }
-    })
-  }
 
-   
+    function addToCart(proId) {
+        $.ajax({
+            url: '/addToCart/' + proId,
+            method: 'get',
+            success: (response) => {
+
+                if (response.status) {
+                    console.log(response.status)
+                    let count = $('#cartCount').html()
+                    count = parseInt(count) + 1
+                    console.log(count, "hhhhhhhhh");
+
+                    $("#cartCount").html(count)
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Cart',
+                    })
+                } else {
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Out of Stock',
+                    }).then(() => {
+                        location.reload();
+                    });
+
+
+                }
+
+            }
+        })
+    }
+
 </script> 

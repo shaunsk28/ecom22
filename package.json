@@ -31,6 +31,6 @@
     "promise": "^8.3.0",
     "razorpay": "^2.8.6",
     "sweetalert": "^2.1.2",
-    "twilio": "^4.10.0"
+    "twilio": "^4.11.2"
   }
 }

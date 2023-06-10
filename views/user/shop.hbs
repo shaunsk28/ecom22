@@ -47,7 +47,7 @@
           </div>
           <p class="mt-15">{{this.Description}}</p>
           <div class="product-action-1 show">
-            <a aria-label="Add To Cart" class="action-btn hover-up add-to-cart-btn" onclick="addToCart('{{this._id}}')">
+            <a aria-label="Add To Cart" class="action-btn hover-up " onclick="addToCart('{{this._id}}')">
               <i class="fi-rs-shopping-bag-add"></i>
               Add To Cart
             </a>
@@ -135,38 +135,7 @@ const currentPathname = window.location.pathname+window.location.search
 
 
 
-    function addToCart(proId) {
-        $.ajax({
-            url: '/addToCart/' + proId,
-            method: 'get',
-            success: (response) => {
-
-                if (response.status) {
-                    console.log(response.status)
-                    let count = $('#cartCount').html()
-                    count = parseInt(count) + 1
-                    console.log(count, "hhhhhhhhh");
-
-                    $("#cartCount").html(count)
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Added to Cart',
-                    })
-                } else {
-
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Out of Stock',
-                    }).then(() => {
-                        location.reload();
-                    });
-
-
-                }
-
-            }
-        })
-    }
+    
 
 
 
@@ -203,18 +172,3 @@ const currentPathname = window.location.pathname+window.location.search
     }
 
 </script>
-{{!-- <div style=" margin-left:45%;">
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-
-            {{#for totalPages currentPage}}
-            <li class="page-item">
-                <a class="page-link" href="?page={{page}}">{{page}}</a>
-            </li>
-            {{/for}}
-
-
-        </ul>
-    </nav>
-
-</div> --}}

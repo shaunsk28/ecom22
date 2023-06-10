@@ -1,15 +1,7 @@
-// var db = require('../config/connection')
-// var session = require('express-session')
+
 var adminHelpers = require('../helpers/admin-helpers');
-
-// const crypto = require('crypto');
-
-var productHelpers = require('../helpers/product-helpers');
+const productHelpers = require('../helpers/product-helpers');
 const userHelpers = require('../helpers/user-helpers');
-// const async = require('hbs/lib/async');
-// const collections = require('../config/collections');
-// const Razorpay=require('razorpay')
-
 require('dotenv').config()
 module.exports = {
   getSignUp: (req, res) => {
@@ -19,7 +11,7 @@ module.exports = {
   },
   postSignUp: (req, res) => {
     userHelpers.doSignup(req.body).then((response) => {
-      // console.log(response);
+
       res.redirect('/login')
     })
 
@@ -55,13 +47,25 @@ module.exports = {
   },
   getHome: async (req, res) => {
     let user = req.session.user
-    let wishlistCount= await userHelpers.getWishListCount(req.session.user_id);
-    let banner = await userHelpers.getBanner()
-    let cartCount = await userHelpers.getCartCount(req.session.user_id)
-    productHelpers.getAllProducts({ isActive: true }).then((products) => {
-      // console.log(products);
-      res.render('user/home', { products, user, banner, cartCount,wishlistCount })
-    })
+    if(user){
+      console.log(user,"eeeeeeeeeeeeee");
+      let wishlistCount= await userHelpers.getWishListCount(req.session.user_id);
+      let banner = await userHelpers.getBanner()
+      let cartCount = await userHelpers.getCartCount(req.session.user._id)
+      console.log("eeeee",cartCount,"eeeeeee");
+      productHelpers.getAllProducts({ isActive: true }).then((products) => {
+        // console.log(products);
+        res.render('user/home', { products, user, banner, cartCount,wishlistCount })
+      })}
+      else{
+        console.log(user,"eeeeeeeeeeeeee");        let banner = await userHelpers.getBanner()
+        productHelpers.getAllProducts({ isActive: true }).then((products) => {
+          // console.log(products);
+          res.render('user/home', { products, banner,  })
+        })
+       
+      }
+    
   },
   getShop: async (req, res) => {
     let search = '';
@@ -127,7 +131,7 @@ module.exports = {
     let user = req.session.user
     let categories = await adminHelpers.getAllCategories()
     let product = await productHelpers.getProductDetails(req.query.id)
-    let cartCount = await userHelpers.getCartCount(req.session._id)
+    let cartCount = await userHelpers.getCartCount(req.session.user._id)
    
     wishlistCount=await userHelpers.getWishListCount(req.session.user._id)
     res.render('user/product-view', { categories, product, user, cartCount,wishlistCount });
@@ -249,9 +253,8 @@ module.exports = {
       console.error(`The operation failed with error: ${error.message}`);
       // Handle the error appropriately, such as redirecting to an error page
     }
-  }
-
-  , postAddress: (req, res) => {
+  }, 
+  postAddress: (req, res) => {
 
     userHelpers.addAddress(req.body)
       .then((data) => {
@@ -263,7 +266,6 @@ module.exports = {
         console.error(`The operation failed with error: ${error.message}`);
       });
   },
-
   getDeleteAddress: (req, res) => {
     let addressId = req.params.id;
     userHelpers.deleteAddress(addressId)
@@ -274,8 +276,6 @@ module.exports = {
         console.error(`The operation failed with error: ${error.message}`);
       });
   },
-
-
   getEditAddress: async (req, res) => {
 
     user = req.session.user;
@@ -335,9 +335,6 @@ module.exports = {
       let amount = totalPrice - discountAmount;
 
       amount = parseInt(amount)
-      
-
-
       await userHelpers.placeOrder(req.body, products, amount,address)
         .then((orderId) => {
           console.log(amount,"gulgulesh");
@@ -503,14 +500,11 @@ module.exports = {
       });
 
   },
-  
   postCouponApply: async (req, res) => {
     let user = req.session.user._id;
     const date = new Date();
     let totalAmount = await userHelpers.getTotalAmount(user)
     let Total = totalAmount;
-
-
     if (req.body.coupon == '') {
       res.json({ noCoupon: true, Total })
       return
@@ -529,20 +523,13 @@ module.exports = {
         res.json(couponres)
         // console.log(Total, "Chukam");
       } else {
-
         couponres.Total = totalAmount;
         // console.log(Total, "Chukammmmmmmmm");
         res.json(couponres)
-
       }
-
     }
-
-
   },
-
   postCouponRemove: async (req, res) => {
-
     let user = req.session.user._id;
     await userHelpers.removeCoupon(user).then(async (response) => {
       response.totalAmount = await userHelpers.getTotalAmount(user);
@@ -588,8 +575,6 @@ module.exports = {
         console.error(`The operation failed with error: ${error.message}`);
         res.json({ status: false, message: 'Failed to add item to wishlist' });
       });
-
-
   },
   postRemoveWishListProduct: (req, res, next) => {
     userHelpers.removeWishListProduct(req.body)
@@ -616,7 +601,6 @@ module.exports = {
       }
     });
   },
-  
   getConfirmForgotPasswordOtp: (req, res) => {
     res.render('user/confirmForgotPasswordOtp', { layout: null });
   },
@@ -638,11 +622,4 @@ module.exports = {
       res.redirect('/login');
     });
   },
-
-
-
-
-
-
-
 }

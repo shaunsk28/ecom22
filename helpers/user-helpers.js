@@ -2,8 +2,6 @@ var db = require('../config/connection')
 var collection=require('../config/collections');
 const async = require('hbs/lib/async');
 const bcrypt=require('bcrypt');
-// const { body } = require('express-validator');
-// const { resolve } = require('promise');
 const Razorpay = require('razorpay')
 const instance = new Razorpay({
   key_id: 'rzp_test_srWwsiEgeprBon',
@@ -11,17 +9,14 @@ const instance = new Razorpay({
 });
 const Swal = require('sweetalert');
 require('dotenv').config()
+const ACCOUNT_SID =process.env.ACCOUNT_SID
+const AUTH_TOKEN =process.env.AUTH_TOKEN
+const SERVICE_ID = process.env.SERVICE_ID
+const Client=require("twilio")(ACCOUNT_SID,AUTH_TOKEN)
 
-var SERVICE_ID="VA4ac11f0a6c6100272657c683309aa7c4"
-var ACCOUNT_SID="AC6ca6b960f3825965975db9f21acdaf12"
-var AUTH_TOKEN="c19c910032304deec3178a61dcbc25c1"
-
-const Client=require("twilio")(ACCOUNT_SID,AUTH_TOKEN);
-// console.log(ACCOUNT_SID,"");
 const ObjectId=require('mongodb').ObjectId
 module.exports={
     doSignup:(userData)=>{
-        // console.log(userData.password);
         
         return new Promise(async (resolve,reject)=>{
             let user=await db.get().collection(collection.USER_COLLECTION).findOne({email:userData.email})
@@ -48,13 +43,12 @@ module.exports={
             let response={}
            let user = await db.get().collection(collection.USER_COLLECTION).findOne({email:userData.email})
             if(user){
-                //  console.log("userTrue");
+
                  if(user.isblocked){
                     resolve({error:"user is blocked"})
                  }else{
                 bcrypt.compare(userData.password, user.password).then((status)=>{
                     if(status){
-                        // console.log('login success');
                         response.user=user
                         response.status=true
                         resolve(response)
@@ -86,7 +80,7 @@ module.exports={
             response.status=true
             response.user=user
             
-            Client.verify.services(SERVICE_ID)
+            Client.verify.v2.services(SERVICE_ID)
             .verifications
             .create({ to: `+91${userData.phone}`, channel: 'sms' })
             .then((data)=>{
@@ -106,16 +100,13 @@ module.exports={
       doOTPConfirm:(confirmotp,userData)=>{
          return new Promise((resolve,reject)=>{
           
-          console.log(userData,"9999999999999999999999")
-          console.log(confirmotp,"1111111111111111111111111");
-            
-          Client.verify.services(SERVICE_ID)
+          Client.verify.v2.services(SERVICE_ID)
           .verificationChecks.create({
             to:`+91${userData.number}`,
             code:confirmotp.phone
           })
           .then(async(data)=>{
-            console.log(data,"222222222222222222222");
+           console.log(data,"1234567890-");
             if(data.status==='approved'){
              
               resolve({status:true})
@@ -222,20 +213,6 @@ module.exports={
           console.log("cartItems",cartItems);
         })
       },
-      // getCartCount: (userId) => {
-      //   return new Promise(async (resolve, reject) => {
-      //     let count = 0
-      //     let cart = await db.get().collection(collection.CART_COLLECTION).findOne({ user: ObjectId(userId) })
-      //     console.log(cart);
-      //     if (cart) {
-      //       count = cart.products.length
-    
-      //     }
-      //     resolve(count)
-    
-      //   })
-      // }
-      
       getCartCount:(userId)=>{
         return new Promise(async(resolve,reject)=>{
             let count= 0
@@ -276,7 +253,6 @@ module.exports={
       },
       removeCartProduct:(details)=>{
         return new Promise((resolve,reject)=>{
-          
             db.get().collection(collection.CART_COLLECTION)
             .updateOne({_id:ObjectId(details.cart)},
             {
@@ -329,9 +305,6 @@ module.exports={
                   }
                 }
     
-                // total:{$sum:{$multiply:['$quantity','$product.Price']}}
-                // total: {$sum: {$multiply:[{$arrayElemAt:["$Array.quantity",0]},"$product.Price"]}} 
-    
               }
             }
     
@@ -361,8 +334,7 @@ module.exports={
             paymentMethod: order['payment-method'],
             products: products.products,
             totalAmount: total,
-            // discount : discount,
-            // percentage:percentage,
+            
             status: status,
             date:new Date()
           }
@@ -736,87 +708,6 @@ module.exports={
     
         })
       },
-      // applyCoupon:(details, userId, date,totalAmount)=>{
-      //   return new Promise(async(resolve,reject)=>{
-      //     let response={};
-          
-      //     let coupon=await db.get().collection(collection.COUPON_COLLECTION).findOne({couponId:details.coupon});
-      //     if(coupon){
-    
-      //       const expDate=new Date(coupon.expDate)
-           
-      //       response.couponData = coupon;
-           
-    
-      //       let user=await db.get().collection(collection.COUPON_COLLECTION).findOne({couponId:details.coupon,Users:ObjectId(userId)})
-             
-      //       if(user){
-              
-      //         response.used="Coupon Already Applied"
-      //         resolve(response)
-             
-    
-      //       }else{
-    
-      //         if(date <=expDate){
-    
-      //             response.dateValid=true;
-      //             resolve(response);
-    
-      //             let total=totalAmount;
-    
-      //             if(total >= coupon.minAmount){
-                    
-      //               response.verifyMinAmount=true;
-      //               resolve(response)
-    
-      //               if(total <= coupon.maxdiscount){
-    
-      //                 response.verifyMaxAmount=true;
-      //                 resolve(response)
-      //               }
-      //               else{
-      //                 response.maxAmountMsg="Your Maximum Purchase should be"+ coupon.maxdiscount;
-      //                 response.maxAmount=true;
-      //                 resolve(response)
-      //               }
-      //             }
-      //             else{
-                    
-      //               response.minAmountMsg="Your Minimum purchase should be"+coupon.minAmount;
-      //               response.minAmount=true;
-      //               resolve(response)
-      //             }   
-    
-      //         }else{
-      //           response.invalidDateMsg = 'Coupon Expired'
-      //           response.invalidDate = true
-      //           response.Coupenused = false
-    
-      //           resolve(response)
-      //           console.log('invalid date');
-      //         }
-      //       }
-            
-      //     }else{
-      //       response.invalidCoupon=true;
-      //       response.invalidCouponMsg="Invalid Coupon";
-      //       resolve(response)
-      //     }
-    
-      //     if(response.dateValid && response.verifyMaxAmount && response.verifyMinAmount)
-      //     {
-      //       response.verify=true;
-      //       db.get().collection(collection.CART_COLLECTION).updateOne({user:ObjectId(userId)},
-      //       {
-      //         $set:{
-      //           coupon:ObjectId(coupon._id)
-      //         }  
-      //       })
-      //       resolve(response)
-      //     }
-      //   })
-      // },
       
       applyCoupon: (details, userId, date, totalAmount) => {
         console.log(details, "RaRARARARARA");
@@ -1462,10 +1353,4 @@ newPass = await bcrypt.hash(newPass, 10);
     console.log(err,"error in update password")
   }
 },
-
-
-      
-
-
-
 }

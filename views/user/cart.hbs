@@ -31,10 +31,13 @@
           <td>₹<span id="price-{{this.product._id}}">{{this.product.Price}}</span></td>
 
           <td>
-            <button class="cart-item-count mr-3"
+            <button class="cart-item-count mr-3" id="dec"
               onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{this.product.Quantity}}','{{../user._id}}',-1)">-</button>
+             
             <span id="qty-{{this.product._id}}">{{this.quantity}}</span>
-            <button class="cart-item-count ml-3"
+           
+           
+            <button class="cart-item-count ml-3" id="inc"
               onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{this.product.Quantity}}','{{../user._id}}',1)">+</button>
           </td>
 
@@ -64,9 +67,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <script>
   function changeQuantity(cartId, proId, prodQty, userId, count) {
-    let quantity = parseInt(document.getElementById('qty-' + proId).innerHTML);
-    let price = parseInt(document.getElementById('price-' + proId).innerHTML);
-
+    
+    let quantity = parseInt(document.getElementById('qty-' + proId).innerText);
+    let price = parseInt(document.getElementById('price-' + proId).innerText);
+    document.getElementById('inc').disabled = true;
+    document.getElementById('dec').disabled = true;
     count = parseInt(count);
     $.ajax({
       url: '/change-product-quantity',
@@ -81,6 +86,8 @@
       },
       method: 'post',
       success: (response) => {
+         document.getElementById('inc').disabled = false;
+         document.getElementById('dec').disabled = false;
         console.log("ivedeeeee///////////////")
         if (response.removeProduct) {
           Swal.fire({
@@ -90,7 +97,7 @@
             location.reload();
           });
         } else if (response.outOfStock) {
-
+           
           Swal.fire({
             icon: 'warning',
             title: 'Out of Stock',
@@ -101,6 +108,7 @@
 
         }
         else {
+           
           document.getElementById('qty-' + proId).innerHTML = quantity + count
           document.getElementById('subTotal-' + proId).innerHTML = parseInt(document.getElementById('qty-' + proId).innerHTML) * parseInt(document.getElementById('price-' + proId).innerHTML)
           document.getElementById('total').innerHTML = response.total

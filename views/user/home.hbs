@@ -12,7 +12,7 @@
                                     <h2 class="animated fw-900">Supper value deals</h2>
                                     <h1 class="animated fw-900 text-brand">On all products</h1>
                                     <p class="animated">Save more with coupons & up to 70% off</p>
-                                    <a class="animated btn btn-brush btn-brush-3" href="shop-product-right.html"> Shop Now </a>
+                                    <a class="animated btn btn-brush btn-brush-3" href="/shop"> Shop Now </a>
                                 </div>
                             </div>
                             <div class="col-lg-7 col-md-6">
@@ -32,7 +32,7 @@
                                     <h2 class="animated fw-900">Fashion Trending</h2>
                                     <h1 class="animated fw-900 text-7">Great Collection</h1>
                                     <p class="animated">Save more with coupons & up to 20% off</p>
-                                    <a class="animated btn btn-brush btn-brush-2" href="shop-product-right.html"> Discover Now </a>
+                                    <a class="animated btn btn-brush btn-brush-2" href="/shop"> Discover Now </a>
                                 </div>
                             </div>
                             <div class="col-lg-7 col-md-6">
@@ -52,7 +52,7 @@
                                     <h2 class="animated fw-900">Big Deals From</h2>
                                     <h1 class="animated fw-900 text-8">Manufacturer</h1>
                                     <p class="animated">Clothing, Shoes, Bags, Wallets...</p>
-                                    <a class="animated btn btn-brush btn-brush-1" href="shop-product-right.html"> Shop Now </a>
+                                    <a class="animated btn btn-brush btn-brush-1" href="/shop"> Shop Now </a>
                                 </div>
                             </div>
                             <div class="col-lg-7 col-md-6">
@@ -117,10 +117,10 @@
                                         </div>
                                         <div class="product-price">
                                             <span>₹{{this.Price}} </span>
-                                            <span class="old-price">$245.8</span>
+                                            <span class="old-price">₹245.8</span>
                                         </div>
                                         <div class="product-action-1 show">
-                                            <a aria-label="Add To Cart" class="action-btn hover-up"  onclick="addToCart('{{this._id}}')"><i class="fi-rs-shopping-bag-add"></i></a>
+                                            <a aria-label="Add To Cart" class="action-btn hover-up add-to-cart-btn"  onclick="addToCart('{{this._id}}')"><i class="fi-rs-shopping-bag-add"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -135,37 +135,4 @@
         </section>
         
     </main>
-    <script>
-        function addToCart(proId) {
-        $.ajax({
-            url: '/addToCart/' + proId,
-            method: 'get',
-            success: (response) => {
-
-                if (response.status) {
-                    console.log(response.status)
-                    let count = $('#cartCount').html()
-                    count = parseInt(count) + 1
-                    console.log(count, "hhhhhhhhh");
-
-                    $("#cartCount").html(count)
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Added to Cart',
-                    })
-                } else {
-
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Out of Stock',
-                    }).then(() => {
-                        location.reload();
-                    });
-
-
-                }
-
-            }
-        })
-    }
-    </script>
+    
