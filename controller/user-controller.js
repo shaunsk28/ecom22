@@ -47,25 +47,26 @@ module.exports = {
   },
   getHome: async (req, res) => {
     let user = req.session.user
-    if(user){
-      console.log(user,"eeeeeeeeeeeeee");
-      let wishlistCount= await userHelpers.getWishListCount(req.session.user_id);
+    if (user) {
+      console.log(user, "eeeeeeeeeeeeee");
+      let wishlistCount = await userHelpers.getWishListCount(req.session.user_id);
       let banner = await userHelpers.getBanner()
       let cartCount = await userHelpers.getCartCount(req.session.user._id)
-      console.log("eeeee",cartCount,"eeeeeee");
+      console.log("eeeee", cartCount, "eeeeeee");
       productHelpers.getAllProducts({ isActive: true }).then((products) => {
         // console.log(products);
-        res.render('user/home', { products, user, banner, cartCount,wishlistCount })
-      })}
-      else{
-        console.log(user,"eeeeeeeeeeeeee");        let banner = await userHelpers.getBanner()
-        productHelpers.getAllProducts({ isActive: true }).then((products) => {
-          // console.log(products);
-          res.render('user/home', { products, banner,  })
-        })
-       
-      }
-    
+        res.render('user/home', { products, user, banner, cartCount, wishlistCount })
+      })
+    }
+    else {
+      console.log(user, "eeeeeeeeeeeeee"); let banner = await userHelpers.getBanner()
+      productHelpers.getAllProducts({ isActive: true }).then((products) => {
+        // console.log(products);
+        res.render('user/home', { products, banner, })
+      })
+
+    }
+
   },
   getShop: async (req, res) => {
     let search = '';
@@ -76,37 +77,37 @@ module.exports = {
     }
 
     if (req.query.page) {
-       page = parseInt(req.query.page);
-      
+      page = parseInt(req.query.page);
+
     }
-    
-    const count = await productHelpers.getProductsPageCount(search,page,limit);
+
+    const count = await productHelpers.getProductsPageCount(search, page, limit);
     let categories = await adminHelpers.getAllCategories({ isBLocked: false })
-    
-     const  wishlistCount= await userHelpers.getWishListCount(req.session.user._id);
+
+    const wishlistCount = await userHelpers.getWishListCount(req.session.user._id);
     const totalPages = Math.ceil(count / limit);
     let cartCount = await userHelpers.getCartCount(req.session.user._id)
 
-    let product = await productHelpers.getAllProducts1({ isActive: true }, search,page,limit)
-   
+    let product = await productHelpers.getAllProducts1({ isActive: true }, search, page, limit)
+
     // console.log("shopPage Serin",totalPages,page);
     res.render('user/shop', {
-      product, categories, user: req.session.user,wishlistCount, cartCount,search,totalPages,page
+      product, categories, user: req.session.user, wishlistCount, cartCount, search, totalPages, page
     })
   },
   getsingleproduct: async (req, res) => {
     let user = req.session.user
-    
-    wishlistCount=await userHelpers.getWishListCount(req.session.user._id)
+
+    wishlistCount = await userHelpers.getWishListCount(req.session.user._id)
     // console.log("1111111111111111111111111111111111111");
     let product = await productHelpers.getProductDetails(req.params.id)
     let cartCount = await userHelpers.getCartCount(req.session.user._id)
     // console.log(cartCount, "ddddddddddddd");
-    res.render('user/product-view', { product, user, cartCount,wishlistCount });
+    res.render('user/product-view', { product, user, cartCount, wishlistCount });
   },
   getCategoryWise: async (req, res) => {
     let cartCount = await userHelpers.getCartCount(req.session.user._id)
-    wishlistCount=await userHelpers.getWishListCount(req.session.user._id)
+    wishlistCount = await userHelpers.getWishListCount(req.session.user._id)
 
 
     let user = req.session.user;
@@ -132,9 +133,9 @@ module.exports = {
     let categories = await adminHelpers.getAllCategories()
     let product = await productHelpers.getProductDetails(req.query.id)
     let cartCount = await userHelpers.getCartCount(req.session.user._id)
-   
-    wishlistCount=await userHelpers.getWishListCount(req.session.user._id)
-    res.render('user/product-view', { categories, product, user, cartCount,wishlistCount });
+
+    wishlistCount = await userHelpers.getWishListCount(req.session.user._id)
+    res.render('user/product-view', { categories, product, user, cartCount, wishlistCount });
   },
   postProductDetails: (req, res) => {
     res.redirect('/product-view', { products, user })
@@ -163,15 +164,15 @@ module.exports = {
     res.render('user/confirmOtp', { layout: null, })
   },
   postConfirmOtp: (req, res) => {
-    
+
     userHelpers.doOTPConfirm(req.body, signupData).then((response) => {
 
       if (response.status) {
-        
+
 
         req.session.loggedIn = true;
         req.session.user = signupData;
-        
+
 
         res.redirect('/')
       } else {
@@ -179,11 +180,11 @@ module.exports = {
       }
     })
   },
-  
+
   getcartDetails: async (req, res) => {
     let products = await userHelpers.getCartProducts(req.session.user._id)
-   
-    let  wishlistCount=await userHelpers.getWishListCount(req.session.user._id)
+
+    let wishlistCount = await userHelpers.getWishListCount(req.session.user._id)
     let totalValue = 0
     let isCartEmpty = true;
     if (products.length > 0) {
@@ -198,21 +199,26 @@ module.exports = {
 
     }
 
-    res.render('user/cart', { products, user: req.session.user, cartCount, totalValue, isCartEmpty,wishlistCount })
+    res.render('user/cart', { products, user: req.session.user, cartCount, totalValue, isCartEmpty, wishlistCount })
 
   },
   getAddToCart: (req, res) => {
     const productId = req.params.id;
+
+
     const userId = req.session.user._id;
     userHelpers.addToCart(productId, userId)
-      .then(() => {
-        res.json({ status: true });
+      .then((response) => {
+        res.json(response);
       })
       .catch(error => {
         console.error(`The operation failed with error: ${error.message}`);
         res.json({ status: false, message: 'Failed to add item to cart' });
       });
+
+
   },
+
   postChangeProductQuantity: (req, res, next) => {
     userHelpers.changeProductQuantity(req.body)
       .then(async (response) => {
@@ -227,20 +233,21 @@ module.exports = {
   postRemoveCartProduct: (req, res, next) => {
     userHelpers.removeCartProduct(req.body)
       .then((response) => {
+        console.log("11111111",req.body,"111111111");
         res.json(response)
       })
       .catch(error => {
         console.error(`The operation failed with error: ${error.message}`);
       });
   },
- 
+
   getProfile: async (req, res) => {
     try {
       const total = await userHelpers.getTotalAmount(req.session.user._id);
       const orders = await userHelpers.getUserOrders(req.session.user._id);
       const cartCount = await userHelpers.getCartCount(req.session.user._id);
       const addresses = await userHelpers.getAllAddresses(req.session.user._id);
-      let balance=await userHelpers.getWalletBalance(req.session.user._id);
+      let balance = await userHelpers.getWalletBalance(req.session.user._id);
       res.render('user/profile', {
         total,
         user: req.session.user,
@@ -253,7 +260,7 @@ module.exports = {
       console.error(`The operation failed with error: ${error.message}`);
       // Handle the error appropriately, such as redirecting to an error page
     }
-  }, 
+  },
   postAddress: (req, res) => {
 
     userHelpers.addAddress(req.body)
@@ -287,7 +294,7 @@ module.exports = {
   },
   postEditAddress: (req, res) => {
     let id = req.params.id
-   
+
     userHelpers.updateAddress(id, req.body)
       .then(() => {
         res.redirect("/profile");
@@ -321,7 +328,7 @@ module.exports = {
     // console.log(req.body.address,"orders");
     console.log(" POST PLACE ORDER FUNCTION POINT");
 
-    let address =await userHelpers.getAddressDetails(req.body.address)
+    let address = await userHelpers.getAddressDetails(req.body.address)
     let products = await userHelpers.getCartProductList(req.body.userId);
     let totalPrice = await userHelpers.getTotalAmount(req.body.userId);
     let verifyCoupon = await userHelpers.couponVerify(req.body.userId);
@@ -335,31 +342,31 @@ module.exports = {
       let amount = totalPrice - discountAmount;
 
       amount = parseInt(amount)
-      await userHelpers.placeOrder(req.body, products, amount,address)
+      await userHelpers.placeOrder(req.body, products, amount, address)
         .then((orderId) => {
-          console.log(amount,"gulgulesh");
+          console.log(amount, "gulgulesh");
           if (req.body['payment-method'] === 'COD') {
             res.json({ codSuccess: true })
           }
-           else if (req.body['payment-method'] === 'WALLET') {
-          let userId = req.session.user._id;
-          let orderId = req.params.id;
-          console.log(orderId,"OrderId----");
+          else if (req.body['payment-method'] === 'WALLET') {
+            let userId = req.session.user._id;
+            let orderId = req.params.id;
+            console.log(orderId, "OrderId----");
 
-          userHelpers.changePaymentStatus(orderId)
-          userHelpers.removeCartItems(userId)
-          userHelpers.updateWallet(amount, userId)
-          .then((response) => {
-            console.log("222222222222",response,"222222222222");
-              res.json(response)
-            })
-            .catch(error => {
-              console.error(`The operation failed with error: ${error.message}`);
-            });
+            userHelpers.changePaymentStatus(orderId)
+            userHelpers.removeCartItems(userId)
+            userHelpers.updateWallet(amount, userId)
+              .then((response) => {
+                console.log("222222222222", response, "222222222222");
+                res.json(response)
+              })
+              .catch(error => {
+                console.error(`The operation failed with error: ${error.message}`);
+              });
 
-        }
+          }
           else {
-            console.log(amount,"shonesh");
+            console.log(amount, "shonesh");
             userHelpers.generateRazorpay(orderId, amount)
               .then((response) => {
                 // console.log(response)
@@ -379,30 +386,38 @@ module.exports = {
 
     }
     else {
-      // console.log(address,"oiipo")
+      console.log("not coupon-----------------")
 
-      await userHelpers.placeOrder(req.body, products, totalPrice,address)
+      await userHelpers.placeOrder(req.body, products, totalPrice, address)
         .then((orderId) => {
-          console.log(orderId,"OrderId----");
+          console.log(orderId, "OrderId----");
           if (req.body['payment-method'] === 'COD') {
-            
+
             res.json({ codSuccess: true })
-          }else if (req.body['payment-method'] === 'WALLET') {
-            let userId = req.session.user._id;
-            // let orderId = req.params.id;
-            console.log(orderId,"OrderId----");
-  
-            userHelpers.changePaymentStatus(orderId)
-            userHelpers.removeCartItems(userId)
-            userHelpers.updateWallet(totalPrice, userId)
-            .then((response) => {
-              console.log("222222222222",response,"222222222222");
-                res.json(response)
-              })
-              .catch(error => {
-                console.error(`The operation failed with error: ${error.message}`);
-              });
-  
+          } else if (req.body['payment-method'] === 'WALLET') {
+            let balance = userHelpers.getWalletBalance(req.body.userId)
+            console.log(balance, 'balanceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+            if (balance >= totalPrice) {
+              let userId = req.session.user._id;
+              // let orderId = req.params.id;
+              console.log(orderId, "OrderId----");
+
+              userHelpers.changePaymentStatus(orderId)
+              userHelpers.removeCartItems(userId)
+              userHelpers.updateWallet(totalPrice, userId)
+                .then((response) => {
+                  console.log("222222222222", response, "222222222222");
+                  res.json(response)
+                })
+                .catch(error => {
+                  console.error(`The operation failed with error: ${error.message}`);
+                });
+
+            } else {
+              let response = { outOfCash: true }
+              res.json(response)
+            }
+
           }
           else {
             userHelpers.generateRazorpay(orderId, totalPrice)
@@ -423,11 +438,11 @@ module.exports = {
       // console.log(req.body)
     }
   },
-  addAdress_checkout:async(req,res)=>{
-    console.log(req.body,"eeeeeeeeee");
+  addAdress_checkout: async (req, res) => {
+    console.log(req.body, "eeeeeeeeee");
     userHelpers.addAddress(req.body)
       .then((data) => {
-        console.log(data,"eeeeeeeeee");
+        console.log(data, "eeeeeeeeee");
 
         res.redirect('/place-order');
       })
@@ -456,11 +471,11 @@ module.exports = {
   },
   getOrderCancel: async (req, res) => {
     let orderId = req.params.id;
-    let order =await userHelpers.getOrderDetails(req.params.id);
-    let refund=order.totalAmount
-    let userId=req.session.user._id
+    let order = await userHelpers.getOrderDetails(req.params.id);
+    let refund = order.totalAmount
+    let userId = req.session.user._id
     // console.log(orderId);
-    userHelpers.addToWallet(userId,refund)
+    userHelpers.addToWallet(userId, refund)
     userHelpers.cancelOrder(orderId)
       .then((response) => {
         res.redirect('/orders')
@@ -483,14 +498,14 @@ module.exports = {
       res.json({ status: false, errMsg: '' })
     })
   },
-  getOrderReturn:async (req, res) => {
+  getOrderReturn: async (req, res) => {
     let orderId = req.params.id;
-    let order =await userHelpers.getOrderDetails(req.params.id);
-    let refund=order.totalAmount
-    let userId=req.session.user._id
-   
-    userHelpers.addToWallet(userId,refund)
-    
+    let order = await userHelpers.getOrderDetails(req.params.id);
+    let refund = order.totalAmount
+    let userId = req.session.user._id
+
+    userHelpers.addToWallet(userId, refund)
+
     userHelpers.returnOrder(orderId)
       .then((response) => {
         res.redirect('/orders')
@@ -537,39 +552,38 @@ module.exports = {
     })
   },
   getWishList: async (req, res) => {
-    const productId=req.params.id;
+    const productId = req.params.id;
     let products = await userHelpers.getWishListProducts(req.session.user._id);
     let quantity = await productHelpers.getInventory(productId);
-    let stock=true;
-    let isWishListEmpty=true;
+    let stock = true;
+    let isWishListEmpty = true;
 
-    if(quantity===0)
-    {
-      stock=false;
+    if (quantity === 0) {
+      stock = false;
     }
     if (products.length > 0) {
-      isWishListEmpty=false;
+      isWishListEmpty = false;
     }
 
-    let cartCount=null
+    let cartCount = null
     let wishListCount = null
 
     if (req.session.user) {
-      cartCount=await userHelpers.getCartCount(req.session.user._id);
+      cartCount = await userHelpers.getCartCount(req.session.user._id);
       wishListCount = await userHelpers.getWishListCount(req.session.user._id);
 
     }
 
-    res.render('user/wishlist', { products, user: req.session.user,cartCount, wishListCount,isWishListEmpty,stock})
+    res.render('user/wishlist', { products, user: req.session.user, cartCount, wishListCount, isWishListEmpty, stock })
   },
-  getAddToWishList:(req, res) => {
+  getAddToWishList: (req, res) => {
     const productId = req.params.id;
 
 
     const userId = req.session.user._id;
     userHelpers.addToWishList(productId, userId)
       .then((response) => {
-        res.json( response );
+        res.json(response);
       })
       .catch(error => {
         console.error(`The operation failed with error: ${error.message}`);
@@ -590,7 +604,7 @@ module.exports = {
   },
   postForgotPassword: (req, res) => {
     userHelpers.checkUserExists(req.body).then((response) => {
-      console.log(response,"foregt");
+      console.log(response, "foregt");
       if (response.userExists) {
         userHelpers.sendForgotPasswordOTP(response.user).then(() => {
           signupData = response.user;

@@ -7,9 +7,10 @@ var objectId=require('mongodb').ObjectId
 module.exports={
     addProduct:(product,callback)=>{
         // console.log(product);
-
+        product.Stock=parseInt(product.Stock)
         db.get().collection(collection.PRODUCT_COLLECTION).insertOne(product).then((data)=>{
             //  console.log(data,"01234567890987654320987654321");
+            
             callback(data.insertedId)
         })
     },
@@ -54,13 +55,15 @@ module.exports={
     }, 
     updateProduct:(productId,proDetails)=>{
         return new Promise(async(resolve,reject)=>{
+          const Stock = parseInt(proDetails.Stock);
+
             db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:objectId(productId)},{
                 $set:{
                     Name:proDetails.Name,
                     Description:proDetails.Description,
                     Price:proDetails.Price,
-                    Category:proDetails.Category,
-                    Quantity:proDetails.Quantity
+                    category:proDetails.category,
+                    Stock:Stock
                 }
             }).then((response)=>{
                 resolve()

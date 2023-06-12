@@ -131,53 +131,92 @@ module.exports={
         })
       },
       addToCart: (proId, userId) => {
-        let  proObj={
-        item:ObjectId(proId),
-        quantity:1
-      }
-      return new Promise(async(resolve,reject)=>{
-        let userCart=await db.get().collection(collection.CART_COLLECTION).findOne({user:ObjectId(userId)})
-        if(userCart)
-        {
-          let proExist=userCart.products.findIndex(product=>product.item==proId)
-          if(proExist!=-1)
-          {
-            db.get().collection(collection.CART_COLLECTION)
-            .updateOne({user:ObjectId(userId),'products.item':ObjectId(proId) },
-            {
-              $inc:{'products.$.quantity':1}
+        let proObj = {
+          item: ObjectId(proId),
+          quantity: 1
+        }
+        return new Promise(async (resolve, reject) => {
+          let userCart = await db.get().collection(collection.CART_COLLECTION).findOne({ user: ObjectId(userId) })
+          let product = await db.get().collection(collection.PRODUCT_COLLECTION).findOne({ _id: ObjectId(proId) })
+          if (userCart) {
+            let proExist = userCart.products.findIndex(product => product.item == proId)
+            if (proExist != -1 && product && product.Stock > 0) {
+              db.get().collection(collection.CART_COLLECTION)
+                .updateOne({ user: ObjectId(userId), 'products.item': ObjectId(proId) },
+                  {
+                    $inc: { 'products.$.quantity': 1 }
+                  }
+                ).then(() => {
+                  resolve({ outOfStock: false })
+                })
+    
+              // update the product quantity in the inventory
+              db.get().collection(collection.PRODUCT_COLLECTION)
+                .updateOne({ _id: ObjectId(proId) },
+                  {
+                    $inc: { Stock: -1 }
+                  }
+                ).then(() => {
+                  resolve()
+                })
+    
+    
+    
             }
-            ).then(()=>{
-              resolve()
-            })
-          } 
-          else 
-          {
-          db.get().collection(collection.CART_COLLECTION)
-          .updateOne({user:ObjectId(userId)},
-            {
-              
-                $push:{products:proObj}
-              
+            else if (product && product.Stock < 1) {
+              resolve({ outOfStock: true })
+    
+            } else {
+              db.get().collection(collection.CART_COLLECTION)
+                .updateOne({ user: ObjectId(userId) },
+                  {
+    
+                    $push: { products: proObj }
+    
+                  }
+                ).then((response) => {
+                  resolve()
+                })
+    
+    
+              //  update the product Quantity in the inventory
+              db.get().collection(collection.PRODUCT_COLLECTION)
+                .updateOne({ _id: ObjectId(proId) },
+                  {
+                    $inc: { Stock: -1 }
+                  }
+                ).then(() => {
+                  resolve()
+                })
             }
-          ).then((response)=>{
-              resolve()
-          })
-          }
-        }else 
-        {
-            let cartObj={
-              user:ObjectId(userId),
-              products:[proObj]
+          } else if (product && product.Stock < 1) {
+            // check the availability of the product in the inventory
+            resolve({ outOfStock: true })
+    
+          } else {
+            let cartObj = {
+              user: ObjectId(userId),
+              products: [proObj]
             }
-            db.get().collection(collection.CART_COLLECTION).insertOne(cartObj).then((response)=>{
+            db.get().collection(collection.CART_COLLECTION).insertOne(cartObj).then((response) => {
               console.log(response);
               resolve()
             })
-        }
-      
+    
+            // update the product Quantity in the inventory
+            db.get().collection(collection.PRODUCT_COLLECTION)
+              .updateOne({ _id: ObjectId(proId) },
+                {
+                  $inc: { Stock: -1 }
+                }
+              ).then(() => {
+                resolve()
+              })
+          }
+    
         })
       },
+    
       getCartProducts: (userId) => {
         return new Promise(async (resolve, reject) => {
     
@@ -213,56 +252,141 @@ module.exports={
           console.log("cartItems",cartItems);
         })
       },
+    
       getCartCount:(userId)=>{
         return new Promise(async(resolve,reject)=>{
             let count= 0
             let cart = await db.get().collection(collection.CART_COLLECTION).findOne({user:ObjectId(userId)})
             if(cart){
                 count = cart.products.length;
-                console.log(count,"dsdssdsdd");
+                // console.log(count,"dsdssdsdd");
             }
                 resolve(count)
         })
      },
-      changeProductQuantity:(details)=>{
-        details.count=parseInt(details.count);
-        details.quantity=parseInt(details.quantity)
-        return new Promise((resolve,reject)=>{
-          if(details.count==-1 && details.quantity==1)
-          {
-            db.get().collection(collection.CART_COLLECTION)
-            .updateOne({_id:ObjectId(details.cart)},
-            {
-              $pull:{products:{item:ObjectId(details.product)}}
-            }
-            ).then((response)=>{
-              resolve({removeProduct:true})
-            })
-          }else
-          {
+     changeProductQuantity: (details) => {
+      return new Promise((resolve, reject) => {
+        details.count = parseInt(details.count);
+        details.quantity = parseInt(details.quantity);
+        details.inventory = parseInt(details.inventory);
+  
+        if (details.inventory <= details.quantity) {
+          resolve({ outOfStock: true })
+        }
+        if (details.count === -1 && details.quantity === 1) {
+          // remove product from cart
           db.get().collection(collection.CART_COLLECTION)
-            .updateOne({_id:ObjectId(details.cart),'products.item':ObjectId(details.product) },
-            {
-              $inc:{'products.$.quantity':details.count}
-            }
-            ).then((response)=>{
-              resolve({status:true})
+            .updateOne({ _id: ObjectId(details.cart) },
+              {
+                $pull: { products: { item: ObjectId(details.product) } }
+              }
+            )
+            .then((response) => {
+              resolve({ removeProduct: true });
             })
-          }
-        })
-      },
-      removeCartProduct:(details)=>{
-        return new Promise((resolve,reject)=>{
-            db.get().collection(collection.CART_COLLECTION)
-            .updateOne({_id:ObjectId(details.cart)},
+            .catch((error) => {
+              console.error(`The operation failed with error: ${error.message}`);
+              reject(error);
+            });
+          // update the product Quantity in the inventory
+          db.get().collection(collection.PRODUCT_COLLECTION)
+            .updateOne({ _id: ObjectId(details.product) },
+              {
+                $inc: { Stock: 1 }
+              }
+            ).then(() => {
+              resolve()
+            }) 
+            .catch((error) => {
+              console.error(`The operation failed with error: ${error.message}`);
+              reject(error);
+            });
+  
+  
+        } else {
+          // check product availability in inventory
+          db.get().collection(collection.PRODUCT_COLLECTION)
+            .aggregate([
+              { $match: { _id: ObjectId(details.product) } },
+              { $set: { QuantityNumeric: { $toInt: "$Stock" } } }
+            ])
+            .toArray()
+            .then((productArray) => {
+              let product = productArray[0];
+              if (!product || product.QuantityNumeric <= details.quantity) {
+                resolve({ outOfStock: true });
+              } else {
+                // update product quantity in cart
+                db.get().collection(collection.CART_COLLECTION)
+                  .updateOne({ _id: ObjectId(details.cart), 'products.item': ObjectId(details.product) },
+                    {
+                      $inc: { 'products.$.quantity': details.count }
+                    }
+                  )
+                  .then((response) => {
+                    // update product quantity in inventory
+                    db.get().collection(collection.PRODUCT_COLLECTION)
+                      .updateOne({ _id: ObjectId(details.product) },
+                        {
+                          $set: { QuantityNumeric: product.QuantityNumeric - details.quantity }
+                        }
+                      )
+                      .then(() => {
+                        resolve({ status: true });
+                      })
+                      .catch((error) => {
+                        console.error(`The operation failed with error: ${error.message}`);
+                        reject(error);
+                      });
+                  })
+                  .catch((error) => {
+                    console.error(`The operation failed with error: ${error.message}`);
+                    reject(error);
+                  });
+              }
+            })
+            .catch((error) => {
+              console.error(`The operation failed with error: ${error.message}`);
+              reject(error);
+            });
+  
+        }
+      });
+  
+    },
+    removeCartProduct: (details) => {
+      return new Promise((resolve, reject) => {
+  
+        db.get().collection(collection.CART_COLLECTION)
+          .updateOne({ _id: ObjectId(details.cart) },
             {
-              $pull:{products:{item:ObjectId(details.product)}}
+              $pull: { products: { item: ObjectId(details.product) } }
             }
-            ).then((response)=>{
-              resolve({removeProduct:true})
-            })  
-        })
-      },
+          )
+          .then((response) => {
+            resolve({ removeProduct: true })
+          })
+          .catch(error => {
+            console.error(`The operation failed with error: ${error.message}`);
+  
+          });
+  
+        // update the product Quantity in the inventory
+        db.get().collection(collection.PRODUCT_COLLECTION)
+          .updateOne({ _id: ObjectId(details.product) },
+            {
+              $inc: { Stock: 1 }
+            }
+          ).then(() => {
+            resolve()
+          })
+  
+      })
+  
+  
+  
+  
+    },
       getTotalAmount: (userId) => {
         return new Promise(async (resolve, reject) => {
     
